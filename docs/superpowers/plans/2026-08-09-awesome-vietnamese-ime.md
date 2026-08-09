@@ -153,7 +153,7 @@ test('validateData: ghi_chu quá 90 ký tự thì ném lỗi', () => {
 - [ ] **Step 4: Chạy test, xác nhận nó trượt**
 
 ```bash
-cd /Users/lenamkhanh/Documents/dev/awesome-vietnamese-ime && node --test scripts/
+cd /Users/lenamkhanh/Documents/dev/awesome-vietnamese-ime && node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: trượt với `Cannot find module .../scripts/lib.mjs`.
@@ -215,7 +215,7 @@ export function validateData(data) {
 - [ ] **Step 6: Chạy test, xác nhận xanh**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: `pass 10`, `fail 0`.
@@ -290,7 +290,7 @@ test('phanLoaiTrangThai: lỗi truy cập đè lên tất cả', () => {
 - [ ] **Step 2: Chạy test, xác nhận trượt**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: trượt vì `phanLoaiTrangThai is not a function` (hoặc lỗi import).
@@ -319,7 +319,7 @@ export function phanLoaiTrangThai(muc, bayGio) {
 - [ ] **Step 4: Chạy test, xác nhận xanh**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: `pass 16`, `fail 0`.
@@ -394,7 +394,7 @@ Chú ý ca `sao: 0` phải đứng **trên** `sao: null` — đây là bẫy: ki
 - [ ] **Step 2: Chạy test, xác nhận trượt**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 - [ ] **Step 3: Cài đặt trong `scripts/lib.mjs`**
@@ -419,7 +419,7 @@ export function sapXep(ds) {
 - [ ] **Step 4: Chạy test, xác nhận xanh**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: `pass 23`, `fail 0`.
@@ -540,7 +540,7 @@ test('renderReadme: chân trang có ngày chốt', () => {
 - [ ] **Step 2: Chạy test, xác nhận trượt**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 - [ ] **Step 3: Cài đặt trong `scripts/lib.mjs`**
@@ -641,7 +641,7 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
 - [ ] **Step 4: Chạy test, xác nhận xanh**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: `pass 33`, `fail 0`.
@@ -722,7 +722,7 @@ test('vuotNguong: không có repo nào thì không bao giờ vượt', () => {
 - [ ] **Step 2: Chạy test, xác nhận trượt**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 - [ ] **Step 3: Cài đặt trong `scripts/lib.mjs`**
@@ -747,7 +747,7 @@ export function vuotNguong(soCoRepo, soLoi) {
 - [ ] **Step 4: Chạy test, xác nhận xanh**
 
 ```bash
-node --test scripts/
+node --test scripts/*.test.mjs
 ```
 
 Kỳ vọng: `pass 43`, `fail 0`.
@@ -1123,7 +1123,7 @@ jobs:
           node-version: '22'
 
       - name: Chạy test trước khi cho phép ghi đè README
-        run: node --test scripts/
+        run: node --test scripts/*.test.mjs
 
       - name: Sinh README
         run: node scripts/build.mjs
@@ -1200,7 +1200,7 @@ Dự án đã ngưng phát triển **vẫn được nhận** nếu có ý nghĩa
 ## Chạy thử tại máy
 
 ```bash
-node --test scripts/                              # bắt buộc, phải xanh
+node --test scripts/*.test.mjs                              # bắt buộc, phải xanh
 GITHUB_TOKEN=$(gh auth token) node scripts/build.mjs
 ```
 
@@ -1213,7 +1213,7 @@ Trong pull request, commit cả `README.md` và `data/.snapshot.json` đã sinh 
 
 ```bash
 cd /Users/lenamkhanh/Documents/dev/awesome-vietnamese-ime
-node --test scripts/
+node --test scripts/*.test.mjs
 GITHUB_TOKEN=$(gh auth token) node scripts/build.mjs
 git status --porcelain
 ```
@@ -1226,7 +1226,7 @@ Kỳ vọng: test xanh; build in `Số liệu không đổi — không ghi file 
 node -e '
 const s = require("fs").readFileSync(".github/workflows/refresh.yml","utf8");
 if (s.includes("\t")) throw new Error("YAML không được có ký tự tab");
-for (const k of ["schedule","workflow_dispatch","contents: write","node --test scripts/","node scripts/build.mjs"])
+for (const k of ["schedule","workflow_dispatch","contents: write","node --test scripts/*.test.mjs","node scripts/build.mjs"])
   if (!s.includes(k)) throw new Error("thiếu: " + k);
 console.log("workflow ổn");
 '
@@ -1264,7 +1264,7 @@ Toàn bộ phải xanh trước khi coi là xong:
 
 ```bash
 cd /Users/lenamkhanh/Documents/dev/awesome-vietnamese-ime
-node --test scripts/                                   # mọi test pass
+node --test scripts/*.test.mjs                                   # mọi test pass
 GITHUB_TOKEN=$(gh auth token) node scripts/build.mjs   # "Số liệu không đổi"
 git status --porcelain                                 # rỗng
 grep -cE 'undefined|NaN|NOASSERTION' README.md         # 0
