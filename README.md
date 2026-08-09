@@ -54,7 +54,7 @@ Ngoài ra còn 4 bộ gõ đa nền tảng cũng chạy trên Linux — xem [Đa
 | [IBus Unikey](https://github.com/vn-input/ibus-unikey) | 146 | 🟡 2025-07 | GPL-3.0 | Nhân Unikey chạy trên IBus, có trước fcitx5-unikey; README báo đã ngừng hỗ trợ. |
 | [Fcitx5 Unikey](https://github.com/fcitx/fcitx5-unikey) | 123 | 🟢 2026-06 | GPL-2.0-or-later | Nhân Unikey cho Fcitx5; README ibus-bamboo khuyên chuyển sang nếu chạy Wayland. |
 | [IBus Lotus](https://github.com/LotusInputEngine/ibus-lotus) | 119 | 📦 2026-01 | GPL-3.0 | Fork tách rời ibus-bamboo để vá lỗi Wayland GNOME/KDE, nay đã ngừng. |
-| [VMK](https://github.com/thanhpy2009/VMK) | 97 | 🟢 2026-02 | GPL-3.0 | Bộ gõ Fcitx5 clone cơ chế không gạch chân của UniKey; alpha, tác giả đã dừng. |
+| [VMK](https://github.com/thanhpy2009/VMK) | 97 | 🟢 2026-02 | GPL-3.0 | Dựng trên fcitx5-bamboo, thêm cơ chế không gạch chân kiểu UniKey; alpha, đã dừng. |
 | [IBus BoGo](https://github.com/BoGoEngine/ibus-bogo) | 93 | 📦 2017-10 | GPL-3.0 | Bộ gõ IBus của engine BoGo, ngưng 2017; cần Qt4 nên không cài được nữa. |
 | [Viet+](https://github.com/vndangkhoa/vietc) | 62 | 🟢 2026-07 | MIT | Gõ Linux qua uinput trực tiếp, không qua khung IBus/Fcitx, còn thử nghiệm. |
 | [IBus Teni](https://github.com/teni-ime/ibus-teni) | 10 | 📦 2020-04 | GPL-3.0 | Kiểu gõ Teni gộp Telex và VNI làm một, chỉ bảng mã Unicode, lưu trữ từ 2020. |
@@ -69,7 +69,7 @@ Ngoài ra còn 4 bộ gõ đa nền tảng cũng chạy trên Linux — xem [Đa
 | [Funput](https://funput.app) | mac · win · linux | 14 | 🟢 2026-08 | MIT | Dùng chung một lõi cho mọi nền tảng, có cả bàn phím iOS/Android riêng. |
 | [VietIME](https://github.com/donamvn/viet-ime) | mac · win · linux | 9 | 🟢 2026-02 | — | Portable, không cần cài; bản mac/Linux có từ v1.0.8 nhưng còn thử nghiệm. |
 | [EVKey](https://evkeyvn.com) | mac · win | — | ⚫ — | — | Không có mã nguồn công khai — repo chính chủ chỉ chứa trang web và updater. |
-| [GoTiengViet](https://www.trankynam.com/gotv) | mac · win · linux | — | ⚫ — | — | Có kiểm tra chính tả và gợi ý từ ghép; bản trả phí, không có mã nguồn. |
+| [GoTiengViet](https://www.trankynam.com/gotv) | mac · win · linux | — | ⚫ — | — | Có kiểm tra chính tả và gợi ý từ ghép; không có mã nguồn công khai. |
 
 ## Thư viện & engine
 

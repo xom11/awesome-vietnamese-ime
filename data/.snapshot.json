@@ -242,7 +242,7 @@
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Fcitx5 clone cơ chế không gạch chân của UniKey; alpha, tác giả đã dừng.",
+      "ghi_chu": "Dựng trên fcitx5-bamboo, thêm cơ chế không gạch chân kiểu UniKey; alpha, đã dừng.",
       "sao": 97,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-02-08T19:55:42Z",
@@ -389,7 +389,7 @@
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Có kiểm tra chính tả và gợi ý từ ghép; bản trả phí, không có mã nguồn.",
+      "ghi_chu": "Có kiểm tra chính tả và gợi ý từ ghép; không có mã nguồn công khai.",
       "sao": null,
       "giay_phep": null,
       "pushed_at": null,
