@@ -1,0 +1,26 @@
+{
+  "muc": [
+    {
+      "id": "gonhanh",
+      "ten": "Gõ Nhanh",
+      "repo": "khaphanspace/gonhanh.org",
+      "trang_chu": "https://gonhanh.org",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Hiệu suất cao, viết native cho macOS"
+    },
+    {
+      "id": "ibus-bamboo",
+      "ten": "ibus-bamboo",
+      "repo": "BambooEngine/ibus-bamboo",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ IBus được cập nhật đều, xử lý tốt lỗi gõ trong trình duyệt"
+    }
+  ],
+  "chon_nhanh": {
+    "macos": ["gonhanh", "ibus-bamboo"],
+    "windows": ["gonhanh", "ibus-bamboo"],
+    "linux": ["ibus-bamboo", "gonhanh"]
+  }
+}
