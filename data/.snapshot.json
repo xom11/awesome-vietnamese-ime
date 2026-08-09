@@ -263,7 +263,7 @@
         "windows"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Windows lâu đời và quen thuộc nhất, không có mã nguồn công khai để tải.",
+      "ghi_chu": "Engine lõi mã nguồn mở GPL (x-unikey, 2001), không có repo GitHub chính chủ.",
       "sao": null,
       "giay_phep": null,
       "pushed_at": null,
@@ -315,7 +315,7 @@
         "windows"
       ],
       "nhom": "thu_vien",
-      "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới mili-giây mỗi phím gõ.",
+      "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới micro-giây mỗi phím gõ.",
       "sao": 22,
       "giay_phep": "Apache-2.0",
       "pushed_at": "2026-07-06T11:42:33Z",

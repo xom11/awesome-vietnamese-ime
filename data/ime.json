@@ -143,7 +143,7 @@
       "trang_chu": "https://www.unikey.org",
       "nen_tang": ["windows"],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Windows lâu đời và quen thuộc nhất, không có mã nguồn công khai để tải."
+      "ghi_chu": "Engine lõi mã nguồn mở GPL (x-unikey, 2001), không có repo GitHub chính chủ."
     },
     {
       "id": "gotiengviet",
@@ -168,7 +168,7 @@
       "repo": "thuupx/uvie-rs",
       "nen_tang": ["linux", "macos", "windows"],
       "nhom": "thu_vien",
-      "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới mili-giây mỗi phím gõ."
+      "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới micro-giây mỗi phím gõ."
     },
     {
       "id": "bogoengine",

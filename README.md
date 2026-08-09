@@ -35,7 +35,7 @@ Không muốn đọc hết thì lấy một trong những cái này:
 | [VKey](https://github.com/phatMT97/VKey) | 173 | 🟢 2026-08 | GPL-3.0 | Bộ gõ Windows nguồn mở, build có ký số qua SignPath, cập nhật rất đều. |
 | [VietType](https://github.com/dinhngtu/VietType) | 53 | 🟢 2026-07 | GPL-3.0 | Bộ gõ Windows nguồn mở, minh bạch, không quảng cáo, có xác thực nguồn gốc build. |
 | [VietIME](https://github.com/donamvn/viet-ime) | 9 | 🟢 2026-02 | — | Bộ gõ Windows portable, không cần cài đặt, hướng người dùng thay Unikey. |
-| [UniKey](https://www.unikey.org) | — | ⚫ — | — | Bộ gõ Windows lâu đời và quen thuộc nhất, không có mã nguồn công khai để tải. |
+| [UniKey](https://www.unikey.org) | — | ⚫ — | — | Engine lõi mã nguồn mở GPL (x-unikey, 2001), không có repo GitHub chính chủ. |
 
 ### Linux
 
@@ -64,7 +64,7 @@ Cho người muốn tự viết bộ gõ chứ không phải đi tìm bộ gõ �
 |---|---:|---|---|---|
 | [vi-rs](https://github.com/ZeroX-DG/vi-rs) | 160 | 🟢 2026-06 | MIT | Thư viện Rust thuần xử lý dấu, không giao diện, để nhúng vào bộ gõ tự viết. |
 | [bogoengine](https://github.com/cmpitg/bogoengine) | 26 | 🔴 2013-11 | GPL-3.0 | Thư viện C++ gốc cho bộ gõ Linux, ngừng phát triển từ 2013, có giá trị lịch sử. |
-| [uvie-rs](https://github.com/thuupx/uvie-rs) | 22 | 🟢 2026-07 | Apache-2.0 | Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới mili-giây mỗi phím gõ. |
+| [uvie-rs](https://github.com/thuupx/uvie-rs) | 22 | 🟢 2026-07 | Apache-2.0 | Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới micro-giây mỗi phím gõ. |
 | [BoGo](https://github.com/BoGoEngine/bogo-python) | 15 | 🔴 2014-08 | GPL-3.0 | Thư viện Python lập trình hàm để viết bộ gõ, ngừng phát triển từ 2014. |
 
 ---
