@@ -2,27 +2,24 @@ name: refresh
 
 # Job này gọi GitHub API lấy ★/lần push cuối/giấy phép rồi tự commit README.
 #
-# Vì sao đẩy bằng PAT chứ không phải GITHUB_TOKEN: org xom11 chặn quyền ghi cho
-# GITHUB_TOKEN ở cấp tổ chức. Secret TOKEN_CAP_NHAT là fine-grained PAT với
-# Resource owner = xom11, chỉ repo này, Contents = Read and write.
+# Đẩy bằng GITHUB_TOKEN — token phiên, hết job là chết, không có ngày hết hạn để
+# quên gia hạn. Chạy được là nhờ Workflow permissions = Read and write (đặt ở
+# org xom11 và ở repo này, 2026-08-09); trước đó cả hai đều là read nên job phải
+# mượn một PAT. Nếu ai đó vặn hai setting đó về read, bước push sẽ đỏ với 403 —
+# đó là chỗ cần nhìn trước tiên, đừng đi tìm token hỏng.
 #
-# Nhánh dự phòng: nếu secret vắng (fork, hoặc token bị xoá), job vẫn chạy đủ
-# test + build rồi dừng trước bước commit — XANH, không đỏ giả. Nó là code sống
-# cho fork, đừng gỡ.
-#
-# Token hết hạn thì bước push đỏ, và chỉ bước push — checkout không nạp PAT nữa
-# nên cổng gác test không mất theo. Đỏ là chủ ý, im lặng mới nguy.
+# Secret TOKEN_CAP_NHAT không còn được tham chiếu ở đâu nữa.
 
 on:
   schedule:
     - cron: '0 3 * * 1'   # 03:00 UTC thứ 2 = 10:00 giờ Việt Nam
   push:
     branches: [main]
-    # KHÔNG thêm 'README.md' hay 'data/.snapshot.json' vào danh sách này.
-    # Job tự commit đúng hai file đó bằng PAT, mà commit đẩy bằng PAT thì CÓ
-    # kích hoạt workflow (khác GITHUB_TOKEN — GitHub chặn sẵn vòng lặp cho nó).
-    # Hai tập không giao nhau chính là thứ duy nhất ngăn job tự gọi lại mình
-    # vô hạn.
+    # Hàng rào chống vòng lặp thật sự nằm ở tầng dưới: commit đẩy bằng
+    # GITHUB_TOKEN KHÔNG kích hoạt workflow, GitHub chặn sẵn. Danh sách paths
+    # dưới đây chỉ để khỏi chạy thừa. Nhưng nếu có ngày quay lại đẩy bằng PAT
+    # thì nó thành hàng rào duy nhất — khi đó tuyệt đối không thêm 'README.md'
+    # hay 'data/.snapshot.json' vào đây, vì job tự commit đúng hai file đó.
     paths:
       - 'data/ime.json'
       - 'scripts/**'
@@ -34,8 +31,9 @@ on:
       - '.github/workflows/refresh.yml'
   workflow_dispatch:
 
+# contents: write là thứ cho phép bước push. kiem.yml giữ read — nó không ghi gì.
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: refresh
@@ -46,21 +44,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Xem có token để tự commit không
-        id: token
-        env:
-          TOKEN_CAP_NHAT: ${{ secrets.TOKEN_CAP_NHAT }}
-        run: |
-          if [ -n "$TOKEN_CAP_NHAT" ]; then
-            echo 'co=1' >> "$GITHUB_OUTPUT"
-          else
-            echo 'co=0' >> "$GITHUB_OUTPUT"
-            echo "::notice::Chưa có secret TOKEN_CAP_NHAT — lần chạy này chỉ kiểm dữ liệu và dựng thử README, không tự commit. Thêm secret là bật được tự cập nhật, không phải sửa file này."
-          fi
-
-      # Không nạp token vào checkout: persist-credentials mặc định ghi thẳng
-      # thông tin đăng nhập vào .git/config và giữ đó suốt job. Bước push tự
-      # mang token của nó, nên PAT hết hạn chỉ làm đỏ đúng bước push.
+      # Không nạp token vào .git/config: bước push tự mang token của nó, nên
+      # quyền ghi bị vặn về read chỉ làm đỏ đúng bước push chứ không kéo theo
+      # cổng gác test ở trên.
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -81,9 +67,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit nếu có thay đổi
-        if: github.event_name != 'pull_request' && steps.token.outputs.co == '1'
+        if: github.event_name != 'pull_request'
         env:
-          TOKEN: ${{ secrets.TOKEN_CAP_NHAT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
@@ -100,21 +85,25 @@ jobs:
 
           git config user.name  'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          remote="https://x-access-token:${TOKEN}@github.com/${{ github.repository }}"
+          remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}"
+
+          # Đẩy về đúng nhánh đang chạy, không cứng 'main': chạy thử bằng
+          # workflow_dispatch trên một nhánh khác mà push HEAD:main là đẩy thẳng
+          # cả nhánh đó vào main.
+          nhanh='${{ github.ref_name }}'
 
           git add README.md data/.snapshot.json
           git commit -m "chore: cập nhật số liệu $(date -u +%Y-%m-%d)"
 
-          # checkout ghim sha của sự kiện, nên main nhúc nhích trong lúc job chạy
-          # là push bị từ chối và lỗi đó rất dễ bị chẩn đoán nhầm thành "PAT hết
-          # hạn". README/snapshot là hàm thuần của dữ liệu nên không có gì để
-          # merge: dựng lại trên đỉnh mới rồi đẩy tiếp.
+          # checkout ghim sha của sự kiện, nên nhánh nhúc nhích trong lúc job
+          # chạy là push bị từ chối. README/snapshot là hàm thuần của dữ liệu
+          # nên không có gì để merge: dựng lại trên đỉnh mới rồi đẩy tiếp.
           for lan in 1 2; do
-            if git push "$remote" HEAD:main; then
+            if git push "$remote" "HEAD:$nhanh"; then
               exit 0
             fi
-            echo "::warning::push bị từ chối (lần $lan) — main đã tiến, dựng lại trên đỉnh mới"
-            git fetch "$remote" main
+            echo "::warning::push bị từ chối (lần $lan) — nhánh đã tiến, dựng lại trên đỉnh mới"
+            git fetch "$remote" "$nhanh"
             git reset --hard FETCH_HEAD
             node scripts/build.mjs
             if ! co_thay_doi; then
