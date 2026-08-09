@@ -1,0 +1,33 @@
+name: kiểm
+
+# Cổng gác mọi thay đổi, kể cả thay đổi chỉ chạm README.md hay CONTRIBUTING.md —
+# refresh.yml lọc paths nên không gác được những file đó. Job này KHÔNG ghi gì,
+# không gọi mạng, không cần secret, nên không có đường nào tự kích hoạt lại mình.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kiem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test
+        run: node --test
+
+      - name: README phải khớp số liệu đã chốt
+        run: node scripts/build.mjs --kiem

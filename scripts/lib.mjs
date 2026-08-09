@@ -277,7 +277,7 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     '',
     'Thiếu bộ gõ nào thì sửa [`data/ime.json`](data/ime.json) — xem [CONTRIBUTING.md](CONTRIBUTING.md). **Đừng sửa README.md, file này do máy sinh ra.**',
     '',
-    'Không rành Git thì [mở issue](../../issues/new) kèm tên bộ gõ và liên kết là đủ.',
+    'Không rành Git thì [mở issue](../../issues/new/choose) kèm tên bộ gõ và liên kết là đủ.',
     '',
     'Giấy phép: [CC0-1.0](LICENSE).',
     '',

@@ -1,16 +1,17 @@
 name: refresh
 
-# Tự cập nhật số liệu đang TẮT, và tắt một cách có chủ ý.
+# Job này gọi GitHub API lấy ★/lần push cuối/giấy phép rồi tự commit README.
 #
-# Org xom11 chặn quyền ghi cho GITHUB_TOKEN ở cấp tổ chức, nên muốn job tự
-# commit thì phải đẩy bằng fine-grained PAT. Chừng nào chưa có secret
-# TOKEN_CAP_NHAT, workflow vẫn chạy đủ test + build (đủ để gác PR và để biết
-# cỗ máy còn sống) rồi dừng trước bước commit — job XANH, không đỏ giả.
+# Vì sao đẩy bằng PAT chứ không phải GITHUB_TOKEN: org xom11 chặn quyền ghi cho
+# GITHUB_TOKEN ở cấp tổ chức. Secret TOKEN_CAP_NHAT là fine-grained PAT với
+# Resource owner = xom11, chỉ repo này, Contents = Read and write.
 #
-# Bật tự cập nhật: tạo fine-grained PAT với Resource owner = xom11, chỉ repo
-# này, quyền Contents = Read and write (Metadata = Read tự kèm), rồi thêm vào
-# Settings → Secrets and variables → Actions với tên TOKEN_CAP_NHAT. Không
-# phải sửa file này. Token hết hạn thì bước push đỏ — chủ ý, im lặng mới nguy.
+# Nhánh dự phòng: nếu secret vắng (fork, hoặc token bị xoá), job vẫn chạy đủ
+# test + build rồi dừng trước bước commit — XANH, không đỏ giả. Nó là code sống
+# cho fork, đừng gỡ.
+#
+# Token hết hạn thì bước push đỏ, và chỉ bước push — checkout không nạp PAT nữa
+# nên cổng gác test không mất theo. Đỏ là chủ ý, im lặng mới nguy.
 
 on:
   schedule:
@@ -57,16 +58,22 @@ jobs:
             echo "::notice::Chưa có secret TOKEN_CAP_NHAT — lần chạy này chỉ kiểm dữ liệu và dựng thử README, không tự commit. Thêm secret là bật được tự cập nhật, không phải sửa file này."
           fi
 
+      # Không nạp token vào checkout: persist-credentials mặc định ghi thẳng
+      # thông tin đăng nhập vào .git/config và giữ đó suốt job. Bước push tự
+      # mang token của nó, nên PAT hết hạn chỉ làm đỏ đúng bước push.
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.TOKEN_CAP_NHAT || github.token }}
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
+      # `node --test` trần, KHÔNG glob: `scripts/*.test.mjs` không khớp file nào
+      # thì shell truyền nguyên chuỗi vào node, node báo "tests 0" rồi exit 0 —
+      # cổng gác im lặng mở toang ngay trước bước ghi đè README và push lên main.
       - name: Chạy test trước khi cho phép ghi đè README
-        run: node --test scripts/*.test.mjs
+        run: node --test
 
       - name: Sinh README
         run: node scripts/build.mjs
@@ -75,13 +82,48 @@ jobs:
 
       - name: Commit nếu có thay đổi
         if: github.event_name != 'pull_request' && steps.token.outputs.co == '1'
+        env:
+          TOKEN: ${{ secrets.TOKEN_CAP_NHAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ -z "$(git status --porcelain)" ]; then
+          set -euo pipefail
+
+          # Chỉ soi đúng hai file job này được phép commit. `git status` trần sẽ
+          # thấy bẩn vì bất cứ thứ gì khác rơi vào cây làm việc, rồi `git commit`
+          # không có gì để commit và job đỏ vô cớ.
+          co_thay_doi() { [ -n "$(git status --porcelain -- README.md data/.snapshot.json)" ]; }
+
+          if ! co_thay_doi; then
             echo "Số liệu không đổi, không commit."
             exit 0
           fi
+
           git config user.name  'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
+          remote="https://x-access-token:${TOKEN}@github.com/${{ github.repository }}"
+
           git add README.md data/.snapshot.json
           git commit -m "chore: cập nhật số liệu $(date -u +%Y-%m-%d)"
-          git push
+
+          # checkout ghim sha của sự kiện, nên main nhúc nhích trong lúc job chạy
+          # là push bị từ chối và lỗi đó rất dễ bị chẩn đoán nhầm thành "PAT hết
+          # hạn". README/snapshot là hàm thuần của dữ liệu nên không có gì để
+          # merge: dựng lại trên đỉnh mới rồi đẩy tiếp.
+          for lan in 1 2; do
+            if git push "$remote" HEAD:main; then
+              exit 0
+            fi
+            echo "::warning::push bị từ chối (lần $lan) — main đã tiến, dựng lại trên đỉnh mới"
+            git fetch "$remote" main
+            git reset --hard FETCH_HEAD
+            node scripts/build.mjs
+            if ! co_thay_doi; then
+              echo "Sau khi đồng bộ thì không còn gì để commit."
+              exit 0
+            fi
+            git add README.md data/.snapshot.json
+            git commit -m "chore: cập nhật số liệu $(date -u +%Y-%m-%d)"
+          done
+
+          echo "::error::push thất bại sau 2 lần dựng lại"
+          exit 1

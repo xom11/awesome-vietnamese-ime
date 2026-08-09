@@ -68,7 +68,53 @@ async function inCanhBao() {
   console.warn(noiDung)
 }
 
+// Chế độ kiểm: không mạng, không token, không ghi gì. Dựng lại README từ số
+// liệu đã chốt trong data/.snapshot.json rồi so với README trong cây làm việc —
+// bắt đúng ca "ai đó sửa README bằng tay", thứ mà cron chỉ dọn được sau một
+// tuần. Cũng là lệnh người đóng góp chạy được ngay, không cần GITHUB_TOKEN.
+async function kiem() {
+  const data = JSON.parse(await readFile(join(GOC, 'data/ime.json'), 'utf8'))
+  validateData(data)
+
+  const snapshot = JSON.parse(await readFile(join(GOC, 'data/.snapshot.json'), 'utf8'))
+  const readmeCu = await readFile(join(GOC, 'README.md'), 'utf8')
+
+  const idMoi = data.muc.filter(m => !snapshot.muc.some(s => s.id === m.id)).map(m => m.id)
+  if (idMoi.length) {
+    console.log(
+      `Có mục chưa có số liệu trong snapshot (${idMoi.join(', ')}) — bỏ qua so sánh README. ` +
+        'Chạy `GITHUB_TOKEN=$(gh auth token) node scripts/build.mjs` để sinh lại.',
+    )
+    return
+  }
+
+  // Nhãn 🟢/🟡/🔴 phụ thuộc thời điểm render, nên phải dựng lại đúng mốc đã
+  // chốt trong README — lấy hôm nay thì một mục vừa quá 183 ngày sẽ lật nhãn
+  // và làm CI đỏ giả.
+  const moc = readmeCu.match(/^Số liệu chốt ngày (\d{4}-\d{2}-\d{2})\.$/m)
+  if (!moc) {
+    console.log('README không có dòng "Số liệu chốt ngày …" — bỏ qua so sánh.')
+    return
+  }
+
+  const readmeMoi = renderReadme({
+    muc: snapshot.muc,
+    chon_nhanh: data.chon_nhanh,
+    bayGio: Date.parse(`${moc[1]}T00:00:00Z`),
+  })
+  const chuanHoa = s => boQuaNgayChot(s.replace(/\r\n/g, '\n'))
+  if (chuanHoa(readmeCu) !== chuanHoa(readmeMoi))
+    throw new Error(
+      'README.md không khớp với data/.snapshot.json — README do máy sinh, đừng sửa tay. ' +
+        'Chạy `GITHUB_TOKEN=$(gh auth token) node scripts/build.mjs` rồi commit lại.',
+    )
+
+  console.log(`README khớp snapshot — ${snapshot.muc.length} mục.`)
+}
+
 async function main() {
+  if (process.argv.includes('--kiem')) return kiem()
+
   const data = JSON.parse(await readFile(join(GOC, 'data/ime.json'), 'utf8'))
   validateData(data)
 

@@ -1,0 +1,4 @@
+# README.md và data/.snapshot.json do máy sinh ra với LF. Trên checkout Windows
+# (core.autocrlf=true mặc định) git sẽ trả file về dạng CRLF, làm mọi so sánh
+# văn bản thành "đã đổi" và đẻ diff giả trong PR.
+* text=auto eol=lf

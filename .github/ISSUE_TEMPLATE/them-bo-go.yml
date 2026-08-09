@@ -1,0 +1,67 @@
+name: Thêm một bộ gõ hoặc thư viện
+description: Không cần biết Git hay JSON — điền vào đây là đủ.
+title: 'Thêm: '
+labels: [dữ liệu]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Đừng khai ★, ngày cập nhật hay giấy phép — máy tự lấy từ GitHub API mỗi tuần.
+
+  - type: input
+    id: ten
+    attributes:
+      label: Tên
+      description: Giữ nguyên cách viết của tác giả.
+      placeholder: Gõ Nhanh
+    validations:
+      required: true
+
+  - type: input
+    id: lien_ket
+    attributes:
+      label: Liên kết
+      description: Repo GitHub, hoặc trang chủ nếu không có mã nguồn công khai.
+      placeholder: https://github.com/chu-repo/ten-repo
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: nen_tang
+    attributes:
+      label: Chạy trên hệ điều hành nào
+      description: Chỉ tính máy tính bàn — bàn phím mobile và extension trình duyệt ngoài phạm vi.
+      options:
+        - label: macOS
+        - label: Windows
+        - label: Linux
+
+  - type: dropdown
+    id: nhom
+    attributes:
+      label: Đây là gì
+      options:
+        - Bộ gõ (cài vào là gõ được tiếng Việt)
+        - Thư viện/engine (để người khác nhúng vào bộ gõ họ tự viết)
+    validations:
+      required: true
+
+  - type: textarea
+    id: ghi_chu
+    attributes:
+      label: Một câu nói rõ cái làm nó khác biệt
+      description: |
+        Tối đa 90 ký tự. Cái người đọc cần để phân biệt nó với hơn hai chục mục
+        khác — không phải câu quảng cáo. Nếu dự án đã ngừng, hoặc bản tải về đã
+        cũ, hoặc cần thư viện không còn cài được, thì nói ra ở đây.
+      placeholder: Bộ gõ macOS viết Rust, tối ưu <10ms độ trễ, tự nhớ chế độ gõ theo từng app.
+    validations:
+      required: true
+
+  - type: textarea
+    id: khac
+    attributes:
+      label: Còn gì nữa không
+      description: Fork từ đâu ra, quan hệ với mục nào đã có trong danh sách, dẫn chứng cho những gì bạn khẳng định ở trên.
+    validations:
+      required: false

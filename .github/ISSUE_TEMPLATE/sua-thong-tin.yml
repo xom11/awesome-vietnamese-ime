@@ -1,0 +1,26 @@
+name: Báo thông tin sai
+description: Một dòng trong bảng nói sai sự thật, hoặc liên kết đã chết.
+title: 'Sai: '
+labels: [dữ liệu]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ★, ngày cập nhật và giấy phép do GitHub API sinh — nếu chúng sai thì
+        thường là `data/ime.json` trỏ nhầm repo, cứ báo luôn ở đây.
+
+  - type: input
+    id: muc
+    attributes:
+      label: Mục nào
+      placeholder: OpenKey
+    validations:
+      required: true
+
+  - type: textarea
+    id: sai
+    attributes:
+      label: Chỗ nào sai, và đúng thì phải là gì
+      description: Kèm dẫn chứng kiểm được — liên kết release, commit, file LICENSE, dòng trong README thượng nguồn.
+    validations:
+      required: true
