@@ -15,7 +15,7 @@
       "repo": "xmannv/xkey",
       "nen_tang": ["macos"],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ macOS viết Swift, có bản Homebrew Cask, gọn nhẹ tập trung một việc."
+      "ghi_chu": "Bộ gõ macOS viết Swift, nhiều tính năng: macro, từ điển, dịch nhanh 30+ ngôn ngữ."
     },
     {
       "id": "phtv",
@@ -33,6 +33,14 @@
       "nen_tang": ["macos"],
       "nhom": "bo_go",
       "ghi_chu": "Bộ gõ macOS viết Rust, tối giản, không có tính năng nào ngoài gõ tiếng Việt."
+    },
+    {
+      "id": "uviekey",
+      "ten": "UVieKey",
+      "repo": "thuupx/UVieKey",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "App macOS chính chủ của engine uvie-rs: nhấn Fn đổi Anh/Việt, có macro gõ tắt."
     },
     {
       "id": "caffee",
@@ -66,15 +74,15 @@
       "trang_chu": "https://evkeyvn.com",
       "nen_tang": ["windows", "macos"],
       "nhom": "bo_go",
-      "ghi_chu": "Windows & macOS, không có mã nguồn công khai — repo chỉ chứa web và updater."
+      "ghi_chu": "Không có mã nguồn công khai — repo chính chủ chỉ chứa trang web và updater."
     },
     {
       "id": "viet-ime",
       "ten": "VietIME",
       "repo": "donamvn/viet-ime",
-      "nen_tang": ["windows"],
+      "nen_tang": ["windows", "macos", "linux"],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Windows portable, không cần cài đặt, hướng người dùng thay Unikey."
+      "ghi_chu": "Portable, không cần cài; bản mac/Linux có từ v1.0.8 nhưng còn thử nghiệm."
     },
     {
       "id": "ibus-bamboo",
@@ -91,7 +99,15 @@
       "trang_chu": "https://lotusinputmethod.github.io/",
       "nen_tang": ["linux"],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Fcitx5 cho Linux, không để lại gạch chân preedit khi gõ."
+      "ghi_chu": "Fork từ VMK, gõ không để lại gạch chân preedit, hiện là bản Fcitx5 sống nhất."
+    },
+    {
+      "id": "ibus-unikey",
+      "ten": "IBus Unikey",
+      "repo": "vn-input/ibus-unikey",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Nhân Unikey chạy trên IBus, có trước fcitx5-unikey; README báo đã ngừng hỗ trợ."
     },
     {
       "id": "fcitx5-unikey",
@@ -99,7 +115,24 @@
       "repo": "fcitx/fcitx5-unikey",
       "nen_tang": ["linux"],
       "nhom": "bo_go",
+      "giay_phep_ghi_tay": "GPL-2.0-or-later",
       "ghi_chu": "Nhân Unikey cho Fcitx5; README ibus-bamboo khuyên chuyển sang nếu chạy Wayland."
+    },
+    {
+      "id": "ibus-lotus",
+      "ten": "IBus Lotus",
+      "repo": "LotusInputEngine/ibus-lotus",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Fork tách rời ibus-bamboo để vá lỗi Wayland GNOME/KDE, nay đã ngừng."
+    },
+    {
+      "id": "vmk",
+      "ten": "VMK",
+      "repo": "thanhpy2009/VMK",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Fcitx5 clone cơ chế không gạch chân của UniKey; alpha, tác giả đã dừng."
     },
     {
       "id": "vietc",
@@ -108,6 +141,22 @@
       "nen_tang": ["linux"],
       "nhom": "bo_go",
       "ghi_chu": "Gõ Linux qua uinput trực tiếp, không qua khung IBus/Fcitx, còn thử nghiệm."
+    },
+    {
+      "id": "ibus-bogo",
+      "ten": "IBus BoGo",
+      "repo": "BoGoEngine/ibus-bogo",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ IBus của engine BoGo, ngưng 2017; cần Qt4 nên không cài được nữa."
+    },
+    {
+      "id": "ibus-teni",
+      "ten": "IBus Teni",
+      "repo": "teni-ime/ibus-teni",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Kiểu gõ Teni gộp Telex và VNI làm một, chỉ bảng mã Unicode, lưu trữ từ 2020."
     },
     {
       "id": "xvnkb",
@@ -124,7 +173,7 @@
       "trang_chu": "https://open-key.org",
       "nen_tang": ["macos", "windows"],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ macOS + Windows phổ biến nhất, dùng kỹ thuật Backspace tránh gạch chân."
+      "ghi_chu": "Phổ biến nhất trên macOS, dùng kỹ thuật Backspace; bản cuối 2.0.5 từ 2022."
     },
     {
       "id": "vnkey",
@@ -133,7 +182,7 @@
       "trang_chu": "https://vnkey.app",
       "nen_tang": ["macos", "windows", "linux"],
       "nhom": "bo_go",
-      "ghi_chu": "Đa nền tảng viết Rust, đóng gói sẵn cho cả Fcitx5, IBus, deb/rpm/nixos."
+      "ghi_chu": "Viết Rust, đóng gói sẵn cho cả Fcitx5, IBus, deb/rpm/nixos."
     },
     {
       "id": "funput",
@@ -142,7 +191,7 @@
       "trang_chu": "https://funput.app",
       "nen_tang": ["macos", "windows", "linux"],
       "nhom": "bo_go",
-      "ghi_chu": "Đa nền tảng dùng chung một lõi, có cả bàn phím iOS/Android riêng."
+      "ghi_chu": "Dùng chung một lõi cho mọi nền tảng, có cả bàn phím iOS/Android riêng."
     },
     {
       "id": "unikey",
@@ -151,7 +200,7 @@
       "trang_chu": "https://www.unikey.org",
       "nen_tang": ["windows"],
       "nhom": "bo_go",
-      "ghi_chu": "Engine lõi mã nguồn mở GPL (x-unikey, 2001), không có repo GitHub chính chủ."
+      "ghi_chu": "Engine lõi nguồn mở GPL tải ở unikey.org/source.html, không có repo GitHub."
     },
     {
       "id": "gotiengviet",
@@ -160,7 +209,7 @@
       "trang_chu": "https://www.trankynam.com/gotv",
       "nen_tang": ["windows", "macos", "linux"],
       "nhom": "bo_go",
-      "ghi_chu": "Đa nền tảng có kiểm tra chính tả và gợi ý từ ghép, bản trả phí không có mã nguồn."
+      "ghi_chu": "Có kiểm tra chính tả và gợi ý từ ghép; bản trả phí, không có mã nguồn."
     },
     {
       "id": "vi-rs",
@@ -176,6 +225,7 @@
       "repo": "thuupx/uvie-rs",
       "nen_tang": ["linux", "macos", "windows"],
       "nhom": "thu_vien",
+      "giay_phep_ghi_tay": "MIT OR Apache-2.0",
       "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới micro-giây mỗi phím gõ."
     },
     {
@@ -196,8 +246,8 @@
     }
   ],
   "chon_nhanh": {
-    "macos": ["openkey", "gonhanh", "xkey"],
-    "windows": ["openkey", "vkey", "viettype"],
-    "linux": ["ibus-bamboo", "fcitx5-lotus", "vnkey"]
+    "macos": ["gonhanh", "xkey"],
+    "windows": ["vkey", "viettype", "unikey"],
+    "linux": ["fcitx5-lotus", "ibus-bamboo", "vnkey"]
   }
 }

@@ -10,7 +10,7 @@
       ],
       "nhom": "bo_go",
       "ghi_chu": "Bộ gõ macOS viết Rust, tối ưu <10ms độ trễ, tự nhớ chế độ gõ theo từng app.",
-      "sao": 749,
+      "sao": 748,
       "giay_phep": "BSD-3-Clause",
       "pushed_at": "2026-08-09T00:09:22Z",
       "archived": false,
@@ -24,7 +24,7 @@
         "macos"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ macOS viết Swift, có bản Homebrew Cask, gọn nhẹ tập trung một việc.",
+      "ghi_chu": "Bộ gõ macOS viết Swift, nhiều tính năng: macro, từ điển, dịch nhanh 30+ ngôn ngữ.",
       "sao": 485,
       "giay_phep": "MIT",
       "pushed_at": "2026-07-22T10:55:21Z",
@@ -41,9 +41,9 @@
       ],
       "nhom": "bo_go",
       "ghi_chu": "Bộ gõ macOS chú trọng riêng tư, xử lý cục bộ, đang mở rộng sang Windows/Linux.",
-      "sao": 164,
+      "sao": 163,
       "giay_phep": "AGPL-3.0",
-      "pushed_at": "2026-08-05T17:48:12Z",
+      "pushed_at": "2026-08-09T08:07:57Z",
       "archived": false,
       "loi_truy_cap": false
     },
@@ -59,6 +59,21 @@
       "sao": 280,
       "giay_phep": "BSD-3-Clause",
       "pushed_at": "2026-06-04T05:14:41Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "uviekey",
+      "ten": "UVieKey",
+      "repo": "thuupx/UVieKey",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "App macOS chính chủ của engine uvie-rs: nhấn Fn đổi Anh/Việt, có macro gõ tắt.",
+      "sao": 21,
+      "giay_phep": null,
+      "pushed_at": "2026-07-10T09:22:40Z",
       "archived": false,
       "loi_truy_cap": false
     },
@@ -118,7 +133,7 @@
         "macos"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Windows & macOS, không có mã nguồn công khai — repo chỉ chứa web và updater.",
+      "ghi_chu": "Không có mã nguồn công khai — repo chính chủ chỉ chứa trang web và updater.",
       "sao": null,
       "giay_phep": null,
       "pushed_at": null,
@@ -130,10 +145,12 @@
       "ten": "VietIME",
       "repo": "donamvn/viet-ime",
       "nen_tang": [
-        "windows"
+        "windows",
+        "macos",
+        "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Windows portable, không cần cài đặt, hướng người dùng thay Unikey.",
+      "ghi_chu": "Portable, không cần cài; bản mac/Linux có từ v1.0.8 nhưng còn thử nghiệm.",
       "sao": 9,
       "giay_phep": null,
       "pushed_at": "2026-02-28T14:24:21Z",
@@ -149,7 +166,7 @@
       ],
       "nhom": "bo_go",
       "ghi_chu": "Bộ gõ IBus nhiều sao nhất Linux, nhưng tác giả tự nhận dự án đã đình trệ.",
-      "sao": 1491,
+      "sao": 1490,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-07-03T00:30:06Z",
       "archived": false,
@@ -164,10 +181,25 @@
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ Fcitx5 cho Linux, không để lại gạch chân preedit khi gõ.",
+      "ghi_chu": "Fork từ VMK, gõ không để lại gạch chân preedit, hiện là bản Fcitx5 sống nhất.",
       "sao": 445,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-08-08T17:30:17Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "ibus-unikey",
+      "ten": "IBus Unikey",
+      "repo": "vn-input/ibus-unikey",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Nhân Unikey chạy trên IBus, có trước fcitx5-unikey; README báo đã ngừng hỗ trợ.",
+      "sao": 146,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2025-07-21T17:15:24Z",
       "archived": false,
       "loi_truy_cap": false
     },
@@ -179,10 +211,41 @@
         "linux"
       ],
       "nhom": "bo_go",
+      "giay_phep_ghi_tay": "GPL-2.0-or-later",
       "ghi_chu": "Nhân Unikey cho Fcitx5; README ibus-bamboo khuyên chuyển sang nếu chạy Wayland.",
       "sao": 123,
-      "giay_phep": null,
+      "giay_phep": "GPL-2.0-or-later",
       "pushed_at": "2026-06-20T06:35:32Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "ibus-lotus",
+      "ten": "IBus Lotus",
+      "repo": "LotusInputEngine/ibus-lotus",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Fork tách rời ibus-bamboo để vá lỗi Wayland GNOME/KDE, nay đã ngừng.",
+      "sao": 119,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-01-17T07:45:23Z",
+      "archived": true,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "vmk",
+      "ten": "VMK",
+      "repo": "thanhpy2009/VMK",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Fcitx5 clone cơ chế không gạch chân của UniKey; alpha, tác giả đã dừng.",
+      "sao": 97,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-02-08T19:55:42Z",
       "archived": false,
       "loi_truy_cap": false
     },
@@ -199,6 +262,36 @@
       "giay_phep": "MIT",
       "pushed_at": "2026-07-13T14:55:42Z",
       "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "ibus-bogo",
+      "ten": "IBus BoGo",
+      "repo": "BoGoEngine/ibus-bogo",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ IBus của engine BoGo, ngưng 2017; cần Qt4 nên không cài được nữa.",
+      "sao": 93,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2017-10-19T09:11:08Z",
+      "archived": true,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "ibus-teni",
+      "ten": "IBus Teni",
+      "repo": "teni-ime/ibus-teni",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Kiểu gõ Teni gộp Telex và VNI làm một, chỉ bảng mã Unicode, lưu trữ từ 2020.",
+      "sao": 10,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2020-04-10T16:13:38Z",
+      "archived": true,
       "loi_truy_cap": false
     },
     {
@@ -226,7 +319,7 @@
         "windows"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ macOS + Windows phổ biến nhất, dùng kỹ thuật Backspace tránh gạch chân.",
+      "ghi_chu": "Phổ biến nhất trên macOS, dùng kỹ thuật Backspace; bản cuối 2.0.5 từ 2022.",
       "sao": 943,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-06-15T15:27:55Z",
@@ -244,7 +337,7 @@
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Đa nền tảng viết Rust, đóng gói sẵn cho cả Fcitx5, IBus, deb/rpm/nixos.",
+      "ghi_chu": "Viết Rust, đóng gói sẵn cho cả Fcitx5, IBus, deb/rpm/nixos.",
       "sao": 101,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-04-03T05:20:42Z",
@@ -262,7 +355,7 @@
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Đa nền tảng dùng chung một lõi, có cả bàn phím iOS/Android riêng.",
+      "ghi_chu": "Dùng chung một lõi cho mọi nền tảng, có cả bàn phím iOS/Android riêng.",
       "sao": 14,
       "giay_phep": "MIT",
       "pushed_at": "2026-08-08T17:16:32Z",
@@ -278,7 +371,7 @@
         "windows"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Engine lõi mã nguồn mở GPL (x-unikey, 2001), không có repo GitHub chính chủ.",
+      "ghi_chu": "Engine lõi nguồn mở GPL tải ở unikey.org/source.html, không có repo GitHub.",
       "sao": null,
       "giay_phep": null,
       "pushed_at": null,
@@ -296,7 +389,7 @@
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Đa nền tảng có kiểm tra chính tả và gợi ý từ ghép, bản trả phí không có mã nguồn.",
+      "ghi_chu": "Có kiểm tra chính tả và gợi ý từ ghép; bản trả phí, không có mã nguồn.",
       "sao": null,
       "giay_phep": null,
       "pushed_at": null,
@@ -330,9 +423,10 @@
         "windows"
       ],
       "nhom": "thu_vien",
+      "giay_phep_ghi_tay": "MIT OR Apache-2.0",
       "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới micro-giây mỗi phím gõ.",
       "sao": 22,
-      "giay_phep": "Apache-2.0",
+      "giay_phep": "MIT OR Apache-2.0",
       "pushed_at": "2026-07-06T11:42:33Z",
       "archived": false,
       "loi_truy_cap": false
@@ -370,18 +464,17 @@
   ],
   "chon_nhanh": {
     "macos": [
-      "openkey",
       "gonhanh",
       "xkey"
     ],
     "windows": [
-      "openkey",
       "vkey",
-      "viettype"
+      "viettype",
+      "unikey"
     ],
     "linux": [
-      "ibus-bamboo",
       "fcitx5-lotus",
+      "ibus-bamboo",
       "vnkey"
     ]
   }
