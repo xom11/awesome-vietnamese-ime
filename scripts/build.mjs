@@ -97,9 +97,13 @@ async function kiem() {
     return
   }
 
+  // Render HOÀN TOÀN từ snapshot, kể cả chon_nhanh: câu hỏi ở đây là "README có
+  // đúng là bản render của số liệu đã chốt không", không phải "ime.json đã đổi
+  // gì". Lấy chon_nhanh từ ime.json thì một PR chỉ sửa gợi ý sẽ đỏ giả, trong
+  // khi CONTRIBUTING vừa hứa PR không phải chạy build thật.
   const readmeMoi = renderReadme({
     muc: snapshot.muc,
-    chon_nhanh: data.chon_nhanh,
+    chon_nhanh: snapshot.chon_nhanh,
     bayGio: Date.parse(`${moc[1]}T00:00:00Z`),
   })
   const chuanHoa = s => boQuaNgayChot(s.replace(/\r\n/g, '\n'))
