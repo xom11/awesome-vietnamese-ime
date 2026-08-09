@@ -2,7 +2,7 @@
 
 Danh sách bộ gõ tiếng Việt cho máy tính bàn, kèm thư viện cho người muốn tự viết bộ gõ.
 
-Số liệu ★, lần push cuối và giấy phép do GitHub Action sinh lại hàng tuần từ [`data/ime.json`](data/ime.json) — không ai chép tay (chốt lần cuối: 2026-08-09).
+Số liệu ★, lần push cuối và giấy phép do GitHub Action sinh lại hàng tuần từ [`data/ime.json`](data/ime.json). Vài giấy phép GitHub đọc không ra thì khai tay, có ghi rõ trong [CONTRIBUTING.md](CONTRIBUTING.md) (chốt lần cuối: 2026-08-09).
 
 Nhãn theo lần push gần nhất: 🟢 trong 6 tháng · 🟡 6–24 tháng · 🔴 quá 24 tháng · 📦 repo đã lưu trữ · ⚪ repo chưa có commit · ⚫ không có repo GitHub chứa mã nguồn bộ gõ · ❓ không truy cập được repo.
 
@@ -22,6 +22,8 @@ Không muốn đọc hết thì lấy một trong những cái này:
 
 ### macOS
 
+Ngoài ra còn 6 bộ gõ đa nền tảng cũng chạy trên macOS — xem [Đa nền tảng](#đa-nền-tảng).
+
 | Tên | ★ | Cập nhật | Giấy phép | Ghi chú |
 |---|---:|---|---|---|
 | [Gõ Nhanh](https://gonhanh.org) | 748 | 🟢 2026-08 | BSD-3-Clause | Bộ gõ macOS viết Rust, tối ưu <10ms độ trễ, tự nhớ chế độ gõ theo từng app. |
@@ -31,9 +33,9 @@ Không muốn đọc hết thì lấy một trong những cái này:
 | [UVieKey](https://github.com/thuupx/UVieKey) | 21 | 🟢 2026-07 | — | App macOS chính chủ của engine uvie-rs: nhấn Fn đổi Anh/Việt, có macro gõ tắt. |
 | [Caffee](https://caffee.khanhicetea.com/) | 17 | 🟢 2026-07 | GPL-3.0 | Bộ gõ macOS tối giản nhất, chỉ chạy được từ macOS 14 Sonoma trở lên. |
 
-Ngoài ra còn 6 bộ gõ đa nền tảng cũng chạy trên macOS — xem [Đa nền tảng](#đa-nền-tảng).
-
 ### Windows
+
+Ngoài ra còn 6 bộ gõ đa nền tảng cũng chạy trên Windows — xem [Đa nền tảng](#đa-nền-tảng).
 
 | Tên | ★ | Cập nhật | Giấy phép | Ghi chú |
 |---|---:|---|---|---|
@@ -41,9 +43,9 @@ Ngoài ra còn 6 bộ gõ đa nền tảng cũng chạy trên macOS — xem [Đa
 | [VietType](https://github.com/dinhngtu/VietType) | 53 | 🟢 2026-07 | GPL-3.0 | Bộ gõ Windows nguồn mở, minh bạch, không quảng cáo, có xác thực nguồn gốc build. |
 | [UniKey](https://www.unikey.org) | — | ⚫ — | — | Engine lõi nguồn mở GPL tải ở unikey.org/source.html, không có repo GitHub. |
 
-Ngoài ra còn 6 bộ gõ đa nền tảng cũng chạy trên Windows — xem [Đa nền tảng](#đa-nền-tảng).
-
 ### Linux
+
+Ngoài ra còn 4 bộ gõ đa nền tảng cũng chạy trên Linux — xem [Đa nền tảng](#đa-nền-tảng).
 
 | Tên | ★ | Cập nhật | Giấy phép | Ghi chú |
 |---|---:|---|---|---|
@@ -57,8 +59,6 @@ Ngoài ra còn 6 bộ gõ đa nền tảng cũng chạy trên Windows — xem [�
 | [Viet+](https://github.com/vndangkhoa/vietc) | 62 | 🟢 2026-07 | MIT | Gõ Linux qua uinput trực tiếp, không qua khung IBus/Fcitx, còn thử nghiệm. |
 | [IBus Teni](https://github.com/teni-ime/ibus-teni) | 10 | 📦 2020-04 | GPL-3.0 | Kiểu gõ Teni gộp Telex và VNI làm một, chỉ bảng mã Unicode, lưu trữ từ 2020. |
 | [xvnkb](https://github.com/lamdao/xvnkb) | 5 | 🔴 2015-09 | khác | Bộ gõ X-Window cũ, ngừng phát triển từ 2015, giữ lại vì giá trị lịch sử. |
-
-Ngoài ra còn 4 bộ gõ đa nền tảng cũng chạy trên Linux — xem [Đa nền tảng](#đa-nền-tảng).
 
 ### Đa nền tảng
 

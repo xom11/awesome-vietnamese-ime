@@ -55,11 +55,19 @@ jobs:
         with:
           node-version: '22'
 
-      # `node --test` trần, KHÔNG glob: `scripts/*.test.mjs` không khớp file nào
-      # thì shell truyền nguyên chuỗi vào node, node báo "tests 0" rồi exit 0 —
-      # cổng gác im lặng mở toang ngay trước bước ghi đè README và push lên main.
+      # Hai lớp, vì bước ngay sau đây ghi đè README rồi push lên main:
+      #  - `node --test` trần thay cho glob `scripts/*.test.mjs`: glob không khớp
+      #    file nào thì shell truyền nguyên chuỗi vào node, và nó cũng bỏ sót
+      #    test nằm trong thư mục con.
+      #  - Chốt sàn `1..N`: dạng trần vẫn exit 0 khi KHÔNG tìm thấy test nào
+      #    (đổi tên lib.test.mjs thành lib.spec.mjs là đủ), tức cổng gác tự mở.
+      # `shell: bash` để có pipefail, nếu không `tee` nuốt mất exit code của node.
       - name: Chạy test trước khi cho phép ghi đè README
-        run: node --test
+        shell: bash
+        run: |
+          node --test --test-reporter=tap | tee /tmp/tap.txt
+          grep -qE '^1\.\.[1-9][0-9]*$' /tmp/tap.txt \
+            || { echo '::error::không chạy test nào — file test bị đổi tên hay dời chỗ?'; exit 1; }
 
       - name: Sinh README
         run: node scripts/build.mjs

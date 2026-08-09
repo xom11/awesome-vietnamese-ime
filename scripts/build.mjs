@@ -3,9 +3,11 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  RE_NGAY_CHOT,
   boQuaNgayChot,
   chonGiayPhep,
   lechGiayPhep,
+  mocRender,
   phanLoaiLoi,
   renderReadme,
   validateData,
@@ -91,11 +93,16 @@ async function kiem() {
   // Nhãn 🟢/🟡/🔴 phụ thuộc thời điểm render, nên phải dựng lại đúng mốc đã
   // chốt trong README — lấy hôm nay thì một mục vừa quá 183 ngày sẽ lật nhãn
   // và làm CI đỏ giả.
-  const moc = readmeCu.match(/^Số liệu chốt ngày (\d{4}-\d{2}-\d{2})\.$/m)
-  if (!moc) {
-    console.log('README không có dòng "Số liệu chốt ngày …" — bỏ qua so sánh.')
-    return
-  }
+  //
+  // Thiếu dòng neo là ĐỎ, không phải bỏ qua: chỉ cần thêm một dấu cách cuối
+  // dòng chân trang là cổng gác này tự tắt trong khi README có nội dung chèn
+  // tay — đúng ca nó sinh ra để chặn.
+  const moc = readmeCu.match(RE_NGAY_CHOT)
+  if (!moc)
+    throw new Error(
+      'README.md thiếu dòng "Số liệu chốt ngày YYYY-MM-DD." — README do máy sinh, ' +
+        'chạy `GITHUB_TOKEN=$(gh auth token) node scripts/build.mjs` rồi commit lại.',
+    )
 
   // Render HOÀN TOÀN từ snapshot, kể cả chon_nhanh: câu hỏi ở đây là "README có
   // đúng là bản render của số liệu đã chốt không", không phải "ime.json đã đổi
@@ -104,7 +111,7 @@ async function kiem() {
   const readmeMoi = renderReadme({
     muc: snapshot.muc,
     chon_nhanh: snapshot.chon_nhanh,
-    bayGio: Date.parse(`${moc[1]}T00:00:00Z`),
+    bayGio: mocRender(Date.parse(`${moc[1]}T00:00:00Z`)),
   })
   const chuanHoa = s => boQuaNgayChot(s.replace(/\r\n/g, '\n'))
   if (chuanHoa(readmeCu) !== chuanHoa(readmeMoi))
@@ -164,7 +171,10 @@ async function main() {
   if (vuotNguong(soCoRepo, soLoi))
     throw new Error(`${soLoi}/${soCoRepo} repo lỗi truy cập, quá 30% — nghi sự cố hệ thống, dừng`)
 
-  const readmeMoi = renderReadme({ muc, chon_nhanh: data.chon_nhanh, bayGio: Date.now() })
+  // mocRender, không phải Date.now(): --kiem dựng lại từ ngày ghi trong README
+  // (tức nửa đêm UTC). Hai mốc lệch nhau vài giờ là đủ để một repo vượt mốc 183
+  // ngày trong khoảng đó làm --kiem từ chối chính README mà lượt chạy này sinh.
+  const readmeMoi = renderReadme({ muc, chon_nhanh: data.chon_nhanh, bayGio: mocRender(Date.now()) })
   const duongDanReadme = join(GOC, 'README.md')
   const readmeCu = await readFile(duongDanReadme, 'utf8').catch(() => null)
 

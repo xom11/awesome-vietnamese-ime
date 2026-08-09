@@ -21,20 +21,23 @@ body:
     id: lien_ket
     attributes:
       label: Liên kết
-      description: Repo GitHub, hoặc trang chủ nếu không có mã nguồn công khai.
+      description: Repo GitHub chính chủ. Không có thì điền trang chủ để tải.
       placeholder: https://github.com/chu-repo/ten-repo
     validations:
       required: true
 
-  - type: checkboxes
+  - type: dropdown
     id: nen_tang
     attributes:
       label: Chạy trên hệ điều hành nào
-      description: Chỉ tính máy tính bàn — bàn phím mobile và extension trình duyệt ngoài phạm vi.
+      description: Chọn được nhiều. Chỉ tính máy tính bàn — bàn phím mobile và extension trình duyệt ngoài phạm vi.
+      multiple: true
       options:
-        - label: macOS
-        - label: Windows
-        - label: Linux
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
 
   - type: dropdown
     id: nhom

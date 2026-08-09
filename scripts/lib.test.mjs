@@ -55,7 +55,8 @@ test('validateData: nhom lạ thì ném lỗi', () => {
 })
 
 test('validateData: repo null hợp lệ, repo sai định dạng thì ném lỗi', () => {
-  assert.doesNotThrow(() => validateData(data([muc({ repo: null }), muc({ id: 'b', ten: 'B' })])))
+  assert.doesNotThrow(() =>
+    validateData(data([muc({ repo: null, trang_chu: 'https://vi.du' }), muc({ id: 'b', ten: 'B' })])))
   assert.throws(
     () => validateData(data([muc({ repo: 'khong-co-gach-cheo' }), muc({ id: 'b', ten: 'B' })])),
     /repo phải dạng "owner\/name"/,
@@ -365,7 +366,23 @@ test('chonGiayPhep: API biết một nửa thì ghi tay bù nốt nửa kia', ()
   assert.equal(lechGiayPhep({ giay_phep: 'Apache-2.0', giay_phep_ghi_tay: 'MIT OR Apache-2.0' }), false)
 })
 
-test('chonGiayPhep: API biết thì API thắng — ghi tay không được đè', () => {
+test('lechGiayPhep: so theo token, không phải chuỗi con', () => {
+  // 'LGPL-3.0-or-later'.includes('GPL-3.0') là true, mà GPL-3.0 là giấy phép của
+  // 12/29 mục trong list — bản so chuỗi con im lặng đúng ca nguy hiểm nhất.
+  assert.equal(lechGiayPhep({ giay_phep: 'GPL-3.0', giay_phep_ghi_tay: 'LGPL-3.0-or-later' }), true)
+  assert.equal(lechGiayPhep({ giay_phep: 'GPL-3.0', giay_phep_ghi_tay: 'AGPL-3.0-or-later' }), true)
+  assert.equal(lechGiayPhep({ giay_phep: 'MIT', giay_phep_ghi_tay: 'MIT-0' }), true)
+
+  // Vẫn phải im lặng với ba ca hợp lệ đang dùng thật trong data/ime.json:
+  assert.equal(lechGiayPhep({ giay_phep: 'GPL-2.0', giay_phep_ghi_tay: 'GPL-2.0-or-later' }), false)
+  assert.equal(lechGiayPhep({ giay_phep: 'Apache-2.0', giay_phep_ghi_tay: 'MIT OR Apache-2.0' }), false)
+  assert.equal(
+    lechGiayPhep({ giay_phep: 'Apache-2.0', giay_phep_ghi_tay: 'Apache-2.0 WITH LLVM-exception' }),
+    false,
+  )
+})
+
+test('chonGiayPhep: API biết thì API thắng, trừ hai ngoại lệ API mù và API biết một nửa', () => {
   // Chốt chống lệch: thượng nguồn thêm file LICENSE là giá trị ghi tay thành đồ
   // giả. API thắng, và lechGiayPhep() bật cờ để build.mjs kêu lên.
   assert.equal(chonGiayPhep({ giay_phep: 'MIT', giay_phep_ghi_tay: 'GPL-3.0' }), 'MIT')
@@ -438,8 +455,18 @@ test('validateData: giay_phep_ghi_tay chỉ dùng được cho mục có repo', 
   assert.doesNotThrow(() =>
     validateData(data([muc({ giay_phep_ghi_tay: 'MIT OR Apache-2.0' }), muc({ id: 'b', ten: 'B' })])))
   assert.throws(
-    () => validateData(data([muc({ repo: null, giay_phep_ghi_tay: 'GPL-3.0' }), muc({ id: 'b', ten: 'B' })])),
+    () => validateData(data([
+      muc({ repo: null, trang_chu: 'https://vi.du', giay_phep_ghi_tay: 'GPL-3.0' }),
+      muc({ id: 'b', ten: 'B' }),
+    ])),
     /giay_phep_ghi_tay/,
+  )
+})
+
+test('validateData: repo null mà không có trang_chu thì mục đó không có liên kết nào', () => {
+  assert.throws(
+    () => validateData(data([muc({ repo: null }), muc({ id: 'b', ten: 'B' })])),
+    /repo null thì bắt buộc có trang_chu/,
   )
 })
 
@@ -512,6 +539,10 @@ test('renderReadme: mỗi bảng OS dẫn sang những mục đa nền tảng c�
     'bảng macOS hiện chỉ 1/2 mục chạy macOS — phải nói ra chỗ còn lại',
   )
   assert.ok(bangMac.includes('#đa-nền-tảng'), 'phải neo được sang bảng kia')
+  assert.ok(
+    bangMac.indexOf('Ngoài ra còn') < bangMac.indexOf('| Tên |'),
+    'phải đứng TRƯỚC bảng — đọc xong bảng mới biết mình vừa đọc danh sách bị cắt thì đã muộn',
+  )
   const bangLinux = out.split('### Linux')[1].split('### ')[0]
   assert.ok(!/bộ gõ đa nền tảng/.test(bangLinux), 'không có mục nào thì đừng in dòng thừa')
 })
@@ -541,7 +572,25 @@ test('renderReadme: có lối đóng góp cho người không dùng Git', () => 
 // So sánh README cũ/mới: chỉ bỏ qua đúng hai câu ngày chốt
 // ---------------------------------------------------------------------------
 
-import { boQuaNgayChot } from './lib.mjs'
+import { RE_NGAY_CHOT, boQuaNgayChot, mocRender } from './lib.mjs'
+
+test('mocRender: mọi thời điểm trong ngày cho cùng một mốc', () => {
+  // build.mjs sinh README lúc 03:00 UTC (cron), còn --kiem dựng lại từ ngày ghi
+  // trong README. Không ghim về nửa đêm thì một repo vượt mốc 183 ngày giữa hai
+  // thời điểm đó làm --kiem từ chối chính README mà build vừa sinh.
+  const nuaDem = Date.parse('2026-08-09T00:00:00Z')
+  for (const t of ['2026-08-09T00:00:00Z', '2026-08-09T03:00:00Z', '2026-08-09T23:59:59Z'])
+    assert.equal(mocRender(Date.parse(t)), nuaDem)
+})
+
+test('RE_NGAY_CHOT: khớp đúng câu renderReadme sinh ra', () => {
+  // Hợp đồng giữa ba nơi: renderReadme sinh, boQuaNgayChot trung hoà,
+  // build.mjs --kiem đọc ngược ngày. Trôi một chỗ là cổng gác --kiem đỏ hàng loạt.
+  const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
+  const m = out.match(RE_NGAY_CHOT)
+  assert.ok(m, 'renderReadme phải sinh ra dòng mà RE_NGAY_CHOT đọc được')
+  assert.equal(m[1], '2026-08-09')
+})
 
 test('boQuaNgayChot: hai câu ngày chốt bị bỏ qua', () => {
   const a = 'x (chốt lần cuối: 2026-08-09) y\nSố liệu chốt ngày 2026-08-09.\n'

@@ -33,9 +33,14 @@ export function validateData(data) {
     for (const t of ['id', 'ten', 'nhom', 'ghi_chu']) {
       if (typeof m[t] !== 'string' || m[t].trim() === '') loi.push(`${o}: thiếu trường "${t}"`)
     }
-    if (!('repo' in m)) loi.push(`${o}: thiếu trường "repo" (dùng null nếu không có mã nguồn công khai)`)
+    if (!('repo' in m))
+      loi.push(`${o}: thiếu trường "repo" (dùng null nếu không có repo GitHub chính chủ chứa mã nguồn bộ gõ)`)
     else if (m.repo !== null && !/^[^/\s]+\/[^/\s]+$/.test(String(m.repo)))
       loi.push(`${o}: repo phải dạng "owner/name", nhận "${m.repo}"`)
+    else if (m.repo === null && !('trang_chu' in m))
+      // Không repo, không trang chủ thì lienKet() trả về tên trần: một dòng
+      // trong bảng mà người đọc không đi đâu được từ đó.
+      loi.push(`${o}: repo null thì bắt buộc có trang_chu, không thì mục này không có liên kết nào`)
 
     if ('trang_chu' in m && !urlHopLe(m.trang_chu))
       loi.push(`${o}: trang_chu phải là URL http(s) không khoảng trắng, nhận "${m.trang_chu}"`)
@@ -140,11 +145,32 @@ export function chonGiayPhep({ giay_phep, giay_phep_ghi_tay }) {
   return giay_phep
 }
 
-// Thượng nguồn đổi giấy phép là giá trị ghi tay hoá đồ giả im lặng. API thắng,
-// và cờ này để build.mjs kêu lên thay vì in mãi giá trị cũ.
+// So theo TOKEN chứ không phải chuỗi con. `'LGPL-3.0-or-later'.includes('GPL-3.0')`
+// là true, nên bản so chuỗi con sẽ im lặng đúng ca nguy hiểm nhất: API nói
+// GPL-3.0 (giấy phép của 12/29 mục trong list) trong khi giá trị ghi tay là
+// LGPL — hai giấy phép khác hẳn nhau về nghĩa vụ.
+function tachToken(bieuThuc) {
+  return bieuThuc
+    .split(/[\s()]+/)
+    .filter(t => t && !['OR', 'AND', 'WITH'].includes(t.toUpperCase()))
+}
+
+// Thượng nguồn đổi giấy phép là giá trị ghi tay hoá đồ giả im lặng. Cờ này để
+// build.mjs kêu lên thay vì in mãi giá trị cũ.
 export function lechGiayPhep({ giay_phep, giay_phep_ghi_tay }) {
   if (!giay_phep_ghi_tay || apiKhongBiet(giay_phep)) return false
-  return !giay_phep_ghi_tay.includes(giay_phep)
+  return !tachToken(giay_phep_ghi_tay).some(
+    t => t === giay_phep || t.replace(/-(only|or-later)$/, '') === giay_phep,
+  )
+}
+
+// Nhãn 🟢/🟡/🔴 tính theo số ngày, nên mốc render phải là nửa đêm UTC chứ không
+// phải "lúc chạy". Hai đường render (build.mjs sinh README, --kiem dựng lại để
+// so) chạy ở hai thời điểm khác nhau trong ngày: một repo vượt mốc 183 ngày
+// giữa hai lần đó sẽ làm --kiem từ chối chính README mà build vừa sinh, kèm
+// thông điệp buộc tội "ai đó sửa README bằng tay".
+export function mocRender(bayGio) {
+  return Date.parse(new Date(bayGio).toISOString().slice(0, 10) + 'T00:00:00Z')
 }
 
 export function chonNhom(muc) {
@@ -226,7 +252,7 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     '',
     'Danh sách bộ gõ tiếng Việt cho máy tính bàn, kèm thư viện cho người muốn tự viết bộ gõ.',
     '',
-    `Số liệu ★, lần push cuối và giấy phép do GitHub Action sinh lại hàng tuần từ [\`data/ime.json\`](data/ime.json) — không ai chép tay (chốt lần cuối: ${ngayChot}).`,
+    `Số liệu ★, lần push cuối và giấy phép do GitHub Action sinh lại hàng tuần từ [\`data/ime.json\`](data/ime.json). Vài giấy phép GitHub đọc không ra thì khai tay, có ghi rõ trong [CONTRIBUTING.md](CONTRIBUTING.md) (chốt lần cuối: ${ngayChot}).`,
     '',
     'Nhãn theo lần push gần nhất: 🟢 trong 6 tháng · 🟡 6–24 tháng · 🔴 quá 24 tháng · 📦 repo đã lưu trữ · ⚪ repo chưa có commit · ⚫ không có repo GitHub chứa mã nguồn bộ gõ · ❓ không truy cập được repo.',
     '',
@@ -253,14 +279,15 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
 
   p.push('', '## Bộ gõ')
   for (const k of NHOM_BO_GO) {
-    p.push('', `### ${TEN_NHOM[k]}`, '', ...bang(theoNhom.get(k), bayGio, k === 'da_nen'))
-    if (k === 'da_nen') continue
-    // Bảng theo OS chỉ chứa mục độc quyền OS đó, nên nó giấu mất phân nửa số
-    // bộ gõ chạy được trên OS đó. Không có dòng này thì người đọc không có cách
-    // nào biết là mình đang xem một danh sách bị cắt.
-    const them = theoNhom.get('da_nen').filter(m => m.nen_tang.includes(k)).length
+    p.push('', `### ${TEN_NHOM[k]}`, '')
+    // Bảng theo OS chỉ chứa mục độc quyền OS đó, nên nó giấu mất phân nửa số bộ
+    // gõ chạy được trên OS đó — bảng Windows đỉnh 173★ trong khi OpenKey 943★
+    // cũng chạy Windows. Dòng này đứng TRƯỚC bảng: đọc xong bảng rồi mới biết
+    // mình vừa đọc một danh sách bị cắt thì đã muộn.
+    const them = k === 'da_nen' ? 0 : theoNhom.get('da_nen').filter(m => m.nen_tang.includes(k)).length
     if (them > 0)
-      p.push('', `Ngoài ra còn ${them} bộ gõ đa nền tảng cũng chạy trên ${TEN_NHOM[k]} — xem [Đa nền tảng](#đa-nền-tảng).`)
+      p.push(`Ngoài ra còn ${them} bộ gõ đa nền tảng cũng chạy trên ${TEN_NHOM[k]} — xem [Đa nền tảng](#đa-nền-tảng).`, '')
+    p.push(...bang(theoNhom.get(k), bayGio, k === 'da_nen'))
   }
 
   p.push(
@@ -286,14 +313,19 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
   return p.join('\n')
 }
 
-// Hai câu này đổi theo thời điểm chạy chứ không theo dữ liệu, nên phải bỏ qua
-// khi so README cũ với mới. Neo vào đúng hai câu đó — regex quét cả file sẽ
+// MỘT hằng cho cả ba nơi dùng tới câu ngày chốt: renderReadme sinh ra nó,
+// boQuaNgayChot trung hoà nó, build.mjs --kiem đọc ngược ngày từ nó. Ba bản
+// regex chép tay ở ba chỗ là ba cơ hội để chúng trôi khỏi nhau trong im lặng.
+export const RE_NGAY_CHOT = /^Số liệu chốt ngày (\d{4}-\d{2}-\d{2})\.$/m
+
+// Hai câu ngày chốt đổi theo thời điểm chạy chứ không theo dữ liệu, nên phải bỏ
+// qua khi so README cũ với mới. Neo vào đúng hai câu đó — regex quét cả file sẽ
 // nuốt luôn ngày nằm trong ghi_chu của một mục, và một đính chính như vậy sẽ
 // không bao giờ được ghi ra file: build in "Số liệu không đổi", CI xanh.
 export function boQuaNgayChot(s) {
   return s
     .replace(/\(chốt lần cuối: \d{4}-\d{2}-\d{2}\)/g, '(chốt lần cuối: …)')
-    .replace(/^Số liệu chốt ngày \d{4}-\d{2}-\d{2}\./gm, 'Số liệu chốt ngày ….')
+    .replace(new RegExp(RE_NGAY_CHOT.source, 'gm'), 'Số liệu chốt ngày ….')
 }
 
 const TY_LE_LOI_TOI_DA = 0.3

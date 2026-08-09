@@ -26,8 +26,15 @@ jobs:
         with:
           node-version: '22'
 
+      # `shell: bash` là bắt buộc, không phải trang trí: shell mặc định của
+      # runner là `bash -e` KHÔNG có pipefail, nên `tee` sẽ nuốt exit code của
+      # node và test đỏ hoá CI xanh. `shell: bash` chạy `bash -eo pipefail`.
       - name: Test
-        run: node --test
+        shell: bash
+        run: |
+          node --test --test-reporter=tap | tee /tmp/tap.txt
+          grep -qE '^1\.\.[1-9][0-9]*$' /tmp/tap.txt \
+            || { echo '::error::không chạy test nào — file test bị đổi tên hay dời chỗ?'; exit 1; }
 
       - name: README phải khớp số liệu đã chốt
         run: node scripts/build.mjs --kiem

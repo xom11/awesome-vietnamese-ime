@@ -27,8 +27,8 @@ Một mục trông như sau:
 |--------|----------|---------|
 | `id` | có | kebab-case, không trùng mục nào khác |
 | `ten` | có | giữ nguyên cách viết của tác giả |
-| `repo` | có | `"chu/repo"`, hoặc `null` nếu không có mã nguồn công khai |
-| `trang_chu` | không | URL `http(s)`; vắng thì liên kết trỏ về repo |
+| `repo` | có | `"chu/repo"`, hoặc `null` nếu không có repo GitHub **chính chủ** chứa mã nguồn bộ gõ |
+| `trang_chu` | không | URL `http(s)`; vắng thì liên kết trỏ về repo. `repo: null` thì **bắt buộc** |
 | `nen_tang` | có | tập con của `["macos", "windows", "linux"]` |
 | `nhom` | có | `"bo_go"` hoặc `"thu_vien"` |
 | `ghi_chu` | có | một câu, tối đa 90 ký tự |
@@ -71,7 +71,14 @@ thẳng trong `ghi_chu`.
 - Bộ gõ hoặc thư viện gõ tiếng Việt cho **máy tính bàn**. Bàn phím mobile,
   extension trình duyệt và plugin editor hiện ngoài phạm vi.
 - Có mã nguồn công khai, hoặc là bản đóng nhưng đủ phổ biến để người đọc cần
-  biết (Unikey, GoTiengViet).
+  biết (EVKey, GoTiengViet).
+
+  Chữ "chính chủ" trong định nghĩa `repo` là cố ý. UniKey có mã nguồn GPL công
+  khai và có cả bản mirror trên GitHub của người khác, nhưng tác giả không phát
+  hành ở đó — nên `repo: null`, và nhãn ⚫ đọc là "không có repo GitHub chính
+  chủ để đo số liệu", không phải "phần mềm đóng". EVKey ngược lại: có repo chính
+  chủ, nhưng repo đó chỉ chứa trang web và updater chứ không có mã nguồn bộ gõ —
+  cũng `repo: null`.
 - Fork không khác gì bản gốc thì không nhận. Fork có thay đổi thực chất thì
   nhận (`ibus-lotus` vá Wayland cho `ibus-bamboo`), và `ghi_chu` phải nói rõ
   nó fork từ đâu — GitHub API không phát hiện được quan hệ này khi người ta
@@ -89,8 +96,12 @@ node --test                     # bắt buộc, phải xanh
 node scripts/build.mjs --kiem   # validate dữ liệu + README có khớp số liệu đã chốt không
 ```
 
-Hai lệnh trên không cần mạng, không cần token — đúng những gì CI chạy trên pull
-request của bạn.
+Hai lệnh trên không cần mạng, không cần token, và chúng chính là job `kiểm` —
+cổng gác quyết định pull request của bạn. Xanh ở máy là xanh trên CI.
+
+CI còn chạy thêm một job nữa (`refresh`) dựng thử README với số liệu thật từ
+GitHub API, chỉ để chắc đường build không nổ. Job đó đỏ vì mạng hay vì hạn gọi
+API thì **không phải lỗi của bạn** — nó không chặn việc merge.
 
 Muốn xem README sinh ra với số liệu mới nhất thì cần gọi API:
 
