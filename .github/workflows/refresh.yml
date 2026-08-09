@@ -1,5 +1,11 @@
 name: refresh
 
+# Org xom11 chặn quyền ghi cho GITHUB_TOKEN ở cấp tổ chức, nên job này đẩy
+# commit bằng một fine-grained PAT lưu trong secret TOKEN_CAP_NHAT của riêng
+# repo. Token cần đúng hai quyền trên repo này: Contents = Read and write,
+# Metadata = Read (bắt buộc kèm). Hết hạn token thì bước "Kiểm secret" hoặc
+# bước push sẽ làm job đỏ — đó là chủ ý, im lặng mới nguy.
+
 on:
   schedule:
     - cron: '0 3 * * 1'   # 03:00 UTC thứ 2 = 10:00 giờ Việt Nam
@@ -17,13 +23,30 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
+      - name: Kiểm secret trước khi làm gì khác
+        if: github.event_name != 'pull_request'
+        env:
+          TOKEN_CAP_NHAT: ${{ secrets.TOKEN_CAP_NHAT }}
+        run: |
+          if [ -z "$TOKEN_CAP_NHAT" ]; then
+            echo "::error::Thiếu secret TOKEN_CAP_NHAT. Tạo fine-grained PAT (Contents: Read and write trên repo này) rồi thêm vào Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.TOKEN_CAP_NHAT || github.token }}
 
       - uses: actions/setup-node@v4
         with:
