@@ -1,10 +1,16 @@
 name: refresh
 
-# Org xom11 chặn quyền ghi cho GITHUB_TOKEN ở cấp tổ chức, nên job này đẩy
-# commit bằng một fine-grained PAT lưu trong secret TOKEN_CAP_NHAT của riêng
-# repo. Token cần đúng hai quyền trên repo này: Contents = Read and write,
-# Metadata = Read (bắt buộc kèm). Hết hạn token thì bước "Kiểm secret" hoặc
-# bước push sẽ làm job đỏ — đó là chủ ý, im lặng mới nguy.
+# Tự cập nhật số liệu đang TẮT, và tắt một cách có chủ ý.
+#
+# Org xom11 chặn quyền ghi cho GITHUB_TOKEN ở cấp tổ chức, nên muốn job tự
+# commit thì phải đẩy bằng fine-grained PAT. Chừng nào chưa có secret
+# TOKEN_CAP_NHAT, workflow vẫn chạy đủ test + build (đủ để gác PR và để biết
+# cỗ máy còn sống) rồi dừng trước bước commit — job XANH, không đỏ giả.
+#
+# Bật tự cập nhật: tạo fine-grained PAT với Resource owner = xom11, chỉ repo
+# này, quyền Contents = Read and write (Metadata = Read tự kèm), rồi thêm vào
+# Settings → Secrets and variables → Actions với tên TOKEN_CAP_NHAT. Không
+# phải sửa file này. Token hết hạn thì bước push đỏ — chủ ý, im lặng mới nguy.
 
 on:
   schedule:
@@ -34,14 +40,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Kiểm secret trước khi làm gì khác
-        if: github.event_name != 'pull_request'
+      - name: Xem có token để tự commit không
+        id: token
         env:
           TOKEN_CAP_NHAT: ${{ secrets.TOKEN_CAP_NHAT }}
         run: |
-          if [ -z "$TOKEN_CAP_NHAT" ]; then
-            echo "::error::Thiếu secret TOKEN_CAP_NHAT. Tạo fine-grained PAT (Contents: Read and write trên repo này) rồi thêm vào Settings → Secrets and variables → Actions."
-            exit 1
+          if [ -n "$TOKEN_CAP_NHAT" ]; then
+            echo 'co=1' >> "$GITHUB_OUTPUT"
+          else
+            echo 'co=0' >> "$GITHUB_OUTPUT"
+            echo "::notice::Chưa có secret TOKEN_CAP_NHAT — lần chạy này chỉ kiểm dữ liệu và dựng thử README, không tự commit. Thêm secret là bật được tự cập nhật, không phải sửa file này."
           fi
 
       - uses: actions/checkout@v4
@@ -61,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit nếu có thay đổi
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.token.outputs.co == '1'
         run: |
           if [ -z "$(git status --porcelain)" ]; then
             echo "Số liệu không đổi, không commit."
