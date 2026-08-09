@@ -168,3 +168,18 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
 
   return p.join('\n')
 }
+
+const TY_LE_LOI_TOI_DA = 0.3
+
+export function phanLoaiLoi({ status, headers }) {
+  const conLai = headers?.get?.('x-ratelimit-remaining')
+  if ((status === 403 || status === 429) && conLai === '0') return 'ha_tang'
+  if (status === 401) return 'ha_tang'
+  if (status === 404 || status === 403) return 'muc'
+  return 'tam_thoi'
+}
+
+export function vuotNguong(soCoRepo, soLoi) {
+  if (soCoRepo === 0) return false
+  return soLoi / soCoRepo > TY_LE_LOI_TOI_DA
+}

@@ -244,3 +244,49 @@ test('renderReadme: chân trang có ngày chốt', () => {
   const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
   assert.ok(out.includes('Số liệu chốt ngày 2026-08-09'))
 })
+
+import { phanLoaiLoi, vuotNguong } from './lib.mjs'
+
+function hdr(obj = {}) {
+  return { get: k => obj[k] ?? null }
+}
+
+test('phanLoaiLoi: 404 là lỗi của riêng mục đó', () => {
+  assert.equal(phanLoaiLoi({ status: 404, headers: hdr() }), 'muc')
+})
+
+test('phanLoaiLoi: 403 khi còn quota là repo riêng tư, lỗi của mục', () => {
+  assert.equal(phanLoaiLoi({ status: 403, headers: hdr({ 'x-ratelimit-remaining': '4998' }) }), 'muc')
+})
+
+test('phanLoaiLoi: 403 khi hết quota là lỗi hạ tầng', () => {
+  assert.equal(phanLoaiLoi({ status: 403, headers: hdr({ 'x-ratelimit-remaining': '0' }) }), 'ha_tang')
+})
+
+test('phanLoaiLoi: 429 hết quota là lỗi hạ tầng', () => {
+  assert.equal(phanLoaiLoi({ status: 429, headers: hdr({ 'x-ratelimit-remaining': '0' }) }), 'ha_tang')
+})
+
+test('phanLoaiLoi: 401 token hỏng là lỗi hạ tầng', () => {
+  assert.equal(phanLoaiLoi({ status: 401, headers: hdr() }), 'ha_tang')
+})
+
+test('phanLoaiLoi: 5xx là tạm thời, đáng thử lại', () => {
+  assert.equal(phanLoaiLoi({ status: 502, headers: hdr() }), 'tam_thoi')
+})
+
+test('vuotNguong: dưới 30% thì không vượt', () => {
+  assert.equal(vuotNguong(30, 9), false)
+})
+
+test('vuotNguong: đúng 30% thì chưa vượt', () => {
+  assert.equal(vuotNguong(10, 3), false)
+})
+
+test('vuotNguong: trên 30% thì vượt', () => {
+  assert.equal(vuotNguong(10, 4), true)
+})
+
+test('vuotNguong: không có repo nào thì không bao giờ vượt', () => {
+  assert.equal(vuotNguong(0, 0), false)
+})
