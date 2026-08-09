@@ -117,3 +117,43 @@ test('phanLoaiTrangThai: lỗi truy cập đè lên tất cả', () => {
     '❓',
   )
 })
+
+import { chonNhom, sapXep } from './lib.mjs'
+
+test('chonNhom: một nền tảng thì vào nhóm OS đó', () => {
+  assert.equal(chonNhom(muc({ nen_tang: ['macos'] })), 'macos')
+  assert.equal(chonNhom(muc({ nen_tang: ['windows'] })), 'windows')
+  assert.equal(chonNhom(muc({ nen_tang: ['linux'] })), 'linux')
+})
+
+test('chonNhom: từ hai nền tảng trở lên thì vào đa nền tảng', () => {
+  assert.equal(chonNhom(muc({ nen_tang: ['macos', 'windows'] })), 'da_nen')
+  assert.equal(chonNhom(muc({ nen_tang: ['macos', 'windows', 'linux'] })), 'da_nen')
+})
+
+test('chonNhom: thư viện luôn vào nhóm thư viện dù đa nền tảng', () => {
+  assert.equal(chonNhom(muc({ nhom: 'thu_vien', nen_tang: ['macos', 'linux'] })), 'thu_vien')
+})
+
+test('sapXep: sao giảm dần', () => {
+  const ds = [
+    { ten: 'A', sao: 10 }, { ten: 'B', sao: 300 }, { ten: 'C', sao: 50 },
+  ]
+  assert.deepEqual(sapXep(ds).map(m => m.ten), ['B', 'C', 'A'])
+})
+
+test('sapXep: bằng sao thì theo tên, đúng thứ tự tiếng Việt', () => {
+  const ds = [{ ten: 'Ước', sao: 5 }, { ten: 'Ánh', sao: 5 }, { ten: 'Đông', sao: 5 }]
+  assert.deepEqual(sapXep(ds).map(m => m.ten), ['Ánh', 'Đông', 'Ước'])
+})
+
+test('sapXep: mục không có sao xuống cuối', () => {
+  const ds = [{ ten: 'A', sao: null }, { ten: 'B', sao: 0 }, { ten: 'C', sao: 7 }]
+  assert.deepEqual(sapXep(ds).map(m => m.ten), ['C', 'B', 'A'])
+})
+
+test('sapXep: không sửa mảng đầu vào', () => {
+  const ds = [{ ten: 'A', sao: 1 }, { ten: 'B', sao: 9 }]
+  sapXep(ds)
+  assert.deepEqual(ds.map(m => m.ten), ['A', 'B'])
+})

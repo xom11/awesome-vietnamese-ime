@@ -62,3 +62,18 @@ export function phanLoaiTrangThai(muc, bayGio) {
   if (soNgay <= NGUONG_CHAM) return { nhan: '🟡', ten: 'Chậm' }
   return { nhan: '🔴', ten: 'Ngưng' }
 }
+
+export function chonNhom(muc) {
+  if (muc.nhom === 'thu_vien') return 'thu_vien'
+  if (muc.nen_tang.length >= 2) return 'da_nen'
+  return muc.nen_tang[0]
+}
+
+export function sapXep(ds) {
+  return [...ds].sort((a, b) => {
+    const sa = a.sao ?? -1
+    const sb = b.sao ?? -1
+    if (sa !== sb) return sb - sa
+    return a.ten.localeCompare(b.ten, 'vi')
+  })
+}
