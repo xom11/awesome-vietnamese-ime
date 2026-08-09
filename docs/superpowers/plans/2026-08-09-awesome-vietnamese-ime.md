@@ -511,7 +511,11 @@ test('renderReadme: mục không có repo dùng trang_chu làm liên kết', () 
 test('renderReadme: gạch đứng trong ghi chú không làm vỡ bảng', () => {
   const ds = [mucDay({ ghi_chu: 'Telex | VNI' }), mucDay({ id: 'b', ten: 'B' })]
   const dong = renderThu(ds).split('\n').find(d => d.includes('Telex'))
-  assert.equal(dong.split('|').length - 1, 6, 'đúng 6 dấu | biên cột, không thêm cột lạ')
+  assert.ok(dong.includes('Telex \\| VNI'), 'dấu | trong ghi chú phải được thoát')
+  assert.equal(
+    dong.split(/(?<!\\)\|/).length - 1, 6,
+    'chỉ 6 dấu | chưa thoát = 6 biên cột, dấu đã thoát không sinh cột lạ',
+  )
 })
 
 test('renderReadme: không lọt undefined hay NaN', () => {
