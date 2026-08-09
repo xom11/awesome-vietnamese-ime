@@ -96,26 +96,37 @@ async function main() {
   if (vuotNguong(soCoRepo, soLoi))
     throw new Error(`${soLoi}/${soCoRepo} repo lỗi truy cập, quá 30% — nghi sự cố hệ thống, dừng`)
 
-  const snapshot = JSON.stringify({ muc, chon_nhanh: data.chon_nhanh }, null, 2) + '\n'
-  const duongDanSnapshot = join(GOC, 'data/.snapshot.json')
-  const cu = await readFile(duongDanSnapshot, 'utf8').catch(() => null)
+  const readmeMoi = renderReadme({ muc, chon_nhanh: data.chon_nhanh, bayGio: Date.now() })
+  const duongDanReadme = join(GOC, 'README.md')
+  const readmeCu = await readFile(duongDanReadme, 'utf8').catch(() => null)
 
-  if (cu === snapshot) {
+  // Quyết định ghi dựa trên README đã render, không phải snapshot dữ liệu —
+  // nếu chỉ so snapshot, một sửa đổi renderReadme (sửa lỗi escape, viết lại
+  // phần mở đầu...) mà không đổi dữ liệu sẽ không bao giờ được ghi ra file.
+  // Bỏ qua mọi ngày dạng YYYY-MM-DD — cả dòng "Số liệu chốt ngày …" ở chân
+  // trang lẫn "chốt lần cuối: …" ở đoạn mở đầu đều đổi theo thời điểm chạy,
+  // không liên quan tới dữ liệu, nên phải bỏ qua cả hai khi so sánh.
+  const boQuaNgayChot = s => s.replace(/\d{4}-\d{2}-\d{2}/g, '')
+
+  if (readmeCu !== null && boQuaNgayChot(readmeCu) === boQuaNgayChot(readmeMoi)) {
     console.log('Số liệu không đổi — không ghi file nào.')
     await inCanhBao()
     return
   }
 
-  await writeFile(
-    join(GOC, 'README.md'),
-    renderReadme({ muc, chon_nhanh: data.chon_nhanh, bayGio: Date.now() }),
-  )
-  await writeFile(duongDanSnapshot, snapshot)
+  const snapshot = JSON.stringify({ muc, chon_nhanh: data.chon_nhanh }, null, 2) + '\n'
+  await writeFile(duongDanReadme, readmeMoi)
+  await writeFile(join(GOC, 'data/.snapshot.json'), snapshot)
   console.log(`Đã ghi README.md — ${muc.length} mục, ${soLoi} lỗi truy cập.`)
   await inCanhBao()
 }
 
-main().catch(e => {
+main().catch(async e => {
+  try {
+    await inCanhBao()
+  } catch (e2) {
+    console.error('LỖI khi ghi cảnh báo:', e2.message)
+  }
   console.error('LỖI:', e.message)
   process.exit(1)
 })
