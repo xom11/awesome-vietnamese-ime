@@ -1,0 +1,44 @@
+name: refresh
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # 03:00 UTC thứ 2 = 10:00 giờ Việt Nam
+  push:
+    paths:
+      - 'data/ime.json'
+      - 'scripts/**'
+      - '.github/workflows/refresh.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Chạy test trước khi cho phép ghi đè README
+        run: node --test scripts/*.test.mjs
+
+      - name: Sinh README
+        run: node scripts/build.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit nếu có thay đổi
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Số liệu không đổi, không commit."
+            exit 0
+          fi
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md data/.snapshot.json
+          git commit -m "chore: cập nhật số liệu $(date -u +%Y-%m-%d)"
+          git push
