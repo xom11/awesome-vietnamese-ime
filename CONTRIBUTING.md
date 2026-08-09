@@ -29,9 +29,9 @@ Một mục trông như sau:
 | `nhom` | có | `"bo_go"` hoặc `"thu_vien"` |
 | `ghi_chu` | có | một câu, tối đa 90 ký tự |
 
-**Đừng khai ★, ngày cập nhật, giấy phép hay ngôn ngữ.** Máy tự lấy từ GitHub API
-mỗi tuần. Khai tay là mở đường cho số liệu lệch — đúng thứ bệnh repo này sinh ra
-để chữa.
+**Đừng khai ★, ngày cập nhật hay giấy phép.** Máy tự lấy từ GitHub API mỗi
+tuần. Nói chung, cái gì API biết thì đừng khai tay — khai tay là mở đường cho
+số liệu lệch.
 
 Mục có `nen_tang` từ hai phần tử trở lên sẽ tự vào nhóm **Đa nền tảng**, không
 cần khai thêm gì.
