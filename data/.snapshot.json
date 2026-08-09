@@ -9,7 +9,7 @@
         "macos"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Hiệu suất cao, viết native cho macOS",
+      "ghi_chu": "Bộ gõ macOS viết Rust, tối ưu <10ms độ trễ, tự nhớ chế độ gõ theo từng app.",
       "sao": 749,
       "giay_phep": "BSD-3-Clause",
       "pushed_at": "2026-08-09T00:09:22Z",
@@ -17,33 +17,357 @@
       "loi_truy_cap": false
     },
     {
+      "id": "xkey",
+      "ten": "XKey",
+      "repo": "xmannv/xkey",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS viết Swift, có bản Homebrew Cask, gọn nhẹ tập trung một việc.",
+      "sao": 485,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-07-22T10:55:21Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "phtv",
+      "ten": "PHTV",
+      "repo": "PhamHungTien/PHTV",
+      "trang_chu": "https://phamhungtien.com/PHTV/",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS chú trọng riêng tư, xử lý cục bộ, đang mở rộng sang Windows/Linux.",
+      "sao": 164,
+      "giay_phep": "AGPL-3.0",
+      "pushed_at": "2026-08-05T17:48:12Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "goxkey",
+      "ten": "Gõkey",
+      "repo": "huytd/goxkey",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS viết Rust, tối giản, không có tính năng nào ngoài gõ tiếng Việt.",
+      "sao": 280,
+      "giay_phep": "BSD-3-Clause",
+      "pushed_at": "2026-06-04T05:14:41Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "caffee",
+      "ten": "Caffee",
+      "repo": "khanhicetea/Caffee",
+      "trang_chu": "https://caffee.khanhicetea.com/",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS tối giản nhất, chỉ chạy được từ macOS 14 Sonoma trở lên.",
+      "sao": 17,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-07-07T03:16:35Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "vkey",
+      "ten": "VKey",
+      "repo": "phatMT97/VKey",
+      "nen_tang": [
+        "windows"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows nguồn mở, build có ký số qua SignPath, cập nhật rất đều.",
+      "sao": 173,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-08-09T05:10:16Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "viettype",
+      "ten": "VietType",
+      "repo": "dinhngtu/VietType",
+      "nen_tang": [
+        "windows"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows nguồn mở, minh bạch, không quảng cáo, có xác thực nguồn gốc build.",
+      "sao": 53,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-07-26T18:32:03Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "evkey",
+      "ten": "EVKey",
+      "repo": null,
+      "trang_chu": "https://evkeyvn.com",
+      "nen_tang": [
+        "windows",
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Windows & macOS, không có mã nguồn công khai — repo chỉ chứa web và updater.",
+      "sao": null,
+      "giay_phep": null,
+      "pushed_at": null,
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "viet-ime",
+      "ten": "VietIME",
+      "repo": "donamvn/viet-ime",
+      "nen_tang": [
+        "windows"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows portable, không cần cài đặt, hướng người dùng thay Unikey.",
+      "sao": 9,
+      "giay_phep": null,
+      "pushed_at": "2026-02-28T14:24:21Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
       "id": "ibus-bamboo",
-      "ten": "ibus-bamboo",
+      "ten": "IBus Bamboo",
       "repo": "BambooEngine/ibus-bamboo",
       "nen_tang": [
         "linux"
       ],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ IBus được cập nhật đều, xử lý tốt lỗi gõ trong trình duyệt",
+      "ghi_chu": "Bộ gõ IBus nhiều sao nhất Linux, nhưng tác giả tự nhận dự án đã đình trệ.",
       "sao": 1491,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-07-03T00:30:06Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "fcitx5-lotus",
+      "ten": "Fcitx5 Lotus",
+      "repo": "LotusInputMethod/fcitx5-lotus",
+      "trang_chu": "https://lotusinputmethod.github.io/",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Fcitx5 cho Linux, không để lại gạch chân preedit khi gõ.",
+      "sao": 445,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-08-08T17:30:17Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "vietc",
+      "ten": "Viet+",
+      "repo": "vndangkhoa/vietc",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Gõ Linux qua uinput trực tiếp, không qua khung IBus/Fcitx, còn thử nghiệm.",
+      "sao": 62,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-07-13T14:55:42Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "xvnkb",
+      "ten": "xvnkb",
+      "repo": "lamdao/xvnkb",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ X-Window cũ, ngừng phát triển từ 2015, giữ lại vì giá trị lịch sử.",
+      "sao": 5,
+      "giay_phep": "NOASSERTION",
+      "pushed_at": "2015-09-28T16:27:57Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "openkey",
+      "ten": "OpenKey",
+      "repo": "tuyenvm/OpenKey",
+      "trang_chu": "https://open-key.org",
+      "nen_tang": [
+        "macos",
+        "windows"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS + Windows phổ biến nhất, dùng kỹ thuật Backspace tránh gạch chân.",
+      "sao": 943,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-06-15T15:27:55Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "vnkey",
+      "ten": "VnKey",
+      "repo": "marixdev/vnkey",
+      "trang_chu": "https://vnkey.app",
+      "nen_tang": [
+        "macos",
+        "windows",
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Đa nền tảng viết Rust, đóng gói sẵn cho cả Fcitx5, IBus, deb/rpm/nixos.",
+      "sao": 101,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2026-04-03T05:20:42Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "funput",
+      "ten": "Funput",
+      "repo": "Funput/Funput",
+      "trang_chu": "https://funput.app",
+      "nen_tang": [
+        "macos",
+        "windows",
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Đa nền tảng dùng chung một lõi, có cả bàn phím iOS/Android riêng.",
+      "sao": 14,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-08-08T17:16:32Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "unikey",
+      "ten": "UniKey",
+      "repo": null,
+      "trang_chu": "https://www.unikey.org",
+      "nen_tang": [
+        "windows"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows lâu đời và quen thuộc nhất, không có mã nguồn công khai để tải.",
+      "sao": null,
+      "giay_phep": null,
+      "pushed_at": null,
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "gotiengviet",
+      "ten": "GoTiengViet",
+      "repo": null,
+      "trang_chu": "https://www.trankynam.com/gotv",
+      "nen_tang": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Đa nền tảng có kiểm tra chính tả và gợi ý từ ghép, bản trả phí không có mã nguồn.",
+      "sao": null,
+      "giay_phep": null,
+      "pushed_at": null,
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "vi-rs",
+      "ten": "vi-rs",
+      "repo": "ZeroX-DG/vi-rs",
+      "nen_tang": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện Rust thuần xử lý dấu, không giao diện, để nhúng vào bộ gõ tự viết.",
+      "sao": 160,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-06-22T08:14:30Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "uvie-rs",
+      "ten": "uvie-rs",
+      "repo": "thuupx/uvie-rs",
+      "nen_tang": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới mili-giây mỗi phím gõ.",
+      "sao": 22,
+      "giay_phep": "Apache-2.0",
+      "pushed_at": "2026-07-06T11:42:33Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "bogoengine",
+      "ten": "bogoengine",
+      "repo": "cmpitg/bogoengine",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện C++ gốc cho bộ gõ Linux, ngừng phát triển từ 2013, có giá trị lịch sử.",
+      "sao": 26,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2013-11-08T09:09:48Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "bogo-python",
+      "ten": "BoGo",
+      "repo": "BoGoEngine/bogo-python",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện Python lập trình hàm để viết bộ gõ, ngừng phát triển từ 2014.",
+      "sao": 15,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2014-08-10T05:39:58Z",
       "archived": false,
       "loi_truy_cap": false
     }
   ],
   "chon_nhanh": {
     "macos": [
+      "openkey",
       "gonhanh",
-      "ibus-bamboo"
+      "xkey"
     ],
     "windows": [
-      "gonhanh",
-      "ibus-bamboo"
+      "openkey",
+      "vkey",
+      "viettype"
     ],
     "linux": [
       "ibus-bamboo",
-      "gonhanh"
+      "fcitx5-lotus",
+      "vnkey"
     ]
   }
 }

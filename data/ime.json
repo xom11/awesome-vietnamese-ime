@@ -7,20 +7,189 @@
       "trang_chu": "https://gonhanh.org",
       "nen_tang": ["macos"],
       "nhom": "bo_go",
-      "ghi_chu": "Hiệu suất cao, viết native cho macOS"
+      "ghi_chu": "Bộ gõ macOS viết Rust, tối ưu <10ms độ trễ, tự nhớ chế độ gõ theo từng app."
+    },
+    {
+      "id": "xkey",
+      "ten": "XKey",
+      "repo": "xmannv/xkey",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS viết Swift, có bản Homebrew Cask, gọn nhẹ tập trung một việc."
+    },
+    {
+      "id": "phtv",
+      "ten": "PHTV",
+      "repo": "PhamHungTien/PHTV",
+      "trang_chu": "https://phamhungtien.com/PHTV/",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS chú trọng riêng tư, xử lý cục bộ, đang mở rộng sang Windows/Linux."
+    },
+    {
+      "id": "goxkey",
+      "ten": "Gõkey",
+      "repo": "huytd/goxkey",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS viết Rust, tối giản, không có tính năng nào ngoài gõ tiếng Việt."
+    },
+    {
+      "id": "caffee",
+      "ten": "Caffee",
+      "repo": "khanhicetea/Caffee",
+      "trang_chu": "https://caffee.khanhicetea.com/",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS tối giản nhất, chỉ chạy được từ macOS 14 Sonoma trở lên."
+    },
+    {
+      "id": "vkey",
+      "ten": "VKey",
+      "repo": "phatMT97/VKey",
+      "nen_tang": ["windows"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows nguồn mở, build có ký số qua SignPath, cập nhật rất đều."
+    },
+    {
+      "id": "viettype",
+      "ten": "VietType",
+      "repo": "dinhngtu/VietType",
+      "nen_tang": ["windows"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows nguồn mở, minh bạch, không quảng cáo, có xác thực nguồn gốc build."
+    },
+    {
+      "id": "evkey",
+      "ten": "EVKey",
+      "repo": null,
+      "trang_chu": "https://evkeyvn.com",
+      "nen_tang": ["windows", "macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Windows & macOS, không có mã nguồn công khai — repo chỉ chứa web và updater."
+    },
+    {
+      "id": "viet-ime",
+      "ten": "VietIME",
+      "repo": "donamvn/viet-ime",
+      "nen_tang": ["windows"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows portable, không cần cài đặt, hướng người dùng thay Unikey."
     },
     {
       "id": "ibus-bamboo",
-      "ten": "ibus-bamboo",
+      "ten": "IBus Bamboo",
       "repo": "BambooEngine/ibus-bamboo",
       "nen_tang": ["linux"],
       "nhom": "bo_go",
-      "ghi_chu": "Bộ gõ IBus được cập nhật đều, xử lý tốt lỗi gõ trong trình duyệt"
+      "ghi_chu": "Bộ gõ IBus nhiều sao nhất Linux, nhưng tác giả tự nhận dự án đã đình trệ."
+    },
+    {
+      "id": "fcitx5-lotus",
+      "ten": "Fcitx5 Lotus",
+      "repo": "LotusInputMethod/fcitx5-lotus",
+      "trang_chu": "https://lotusinputmethod.github.io/",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Fcitx5 cho Linux, không để lại gạch chân preedit khi gõ."
+    },
+    {
+      "id": "vietc",
+      "ten": "Viet+",
+      "repo": "vndangkhoa/vietc",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Gõ Linux qua uinput trực tiếp, không qua khung IBus/Fcitx, còn thử nghiệm."
+    },
+    {
+      "id": "xvnkb",
+      "ten": "xvnkb",
+      "repo": "lamdao/xvnkb",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ X-Window cũ, ngừng phát triển từ 2015, giữ lại vì giá trị lịch sử."
+    },
+    {
+      "id": "openkey",
+      "ten": "OpenKey",
+      "repo": "tuyenvm/OpenKey",
+      "trang_chu": "https://open-key.org",
+      "nen_tang": ["macos", "windows"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS + Windows phổ biến nhất, dùng kỹ thuật Backspace tránh gạch chân."
+    },
+    {
+      "id": "vnkey",
+      "ten": "VnKey",
+      "repo": "marixdev/vnkey",
+      "trang_chu": "https://vnkey.app",
+      "nen_tang": ["macos", "windows", "linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Đa nền tảng viết Rust, đóng gói sẵn cho cả Fcitx5, IBus, deb/rpm/nixos."
+    },
+    {
+      "id": "funput",
+      "ten": "Funput",
+      "repo": "Funput/Funput",
+      "trang_chu": "https://funput.app",
+      "nen_tang": ["macos", "windows", "linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Đa nền tảng dùng chung một lõi, có cả bàn phím iOS/Android riêng."
+    },
+    {
+      "id": "unikey",
+      "ten": "UniKey",
+      "repo": null,
+      "trang_chu": "https://www.unikey.org",
+      "nen_tang": ["windows"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ Windows lâu đời và quen thuộc nhất, không có mã nguồn công khai để tải."
+    },
+    {
+      "id": "gotiengviet",
+      "ten": "GoTiengViet",
+      "repo": null,
+      "trang_chu": "https://www.trankynam.com/gotv",
+      "nen_tang": ["windows", "macos", "linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Đa nền tảng có kiểm tra chính tả và gợi ý từ ghép, bản trả phí không có mã nguồn."
+    },
+    {
+      "id": "vi-rs",
+      "ten": "vi-rs",
+      "repo": "ZeroX-DG/vi-rs",
+      "nen_tang": ["linux", "macos", "windows"],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện Rust thuần xử lý dấu, không giao diện, để nhúng vào bộ gõ tự viết."
+    },
+    {
+      "id": "uvie-rs",
+      "ten": "uvie-rs",
+      "repo": "thuupx/uvie-rs",
+      "nen_tang": ["linux", "macos", "windows"],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện Rust no_std/no-alloc, tối ưu độ trễ dưới mili-giây mỗi phím gõ."
+    },
+    {
+      "id": "bogoengine",
+      "ten": "bogoengine",
+      "repo": "cmpitg/bogoengine",
+      "nen_tang": ["linux"],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện C++ gốc cho bộ gõ Linux, ngừng phát triển từ 2013, có giá trị lịch sử."
+    },
+    {
+      "id": "bogo-python",
+      "ten": "BoGo",
+      "repo": "BoGoEngine/bogo-python",
+      "nen_tang": ["linux"],
+      "nhom": "thu_vien",
+      "ghi_chu": "Thư viện Python lập trình hàm để viết bộ gõ, ngừng phát triển từ 2014."
     }
   ],
   "chon_nhanh": {
-    "macos": ["gonhanh", "ibus-bamboo"],
-    "windows": ["gonhanh", "ibus-bamboo"],
-    "linux": ["ibus-bamboo", "gonhanh"]
+    "macos": ["openkey", "gonhanh", "xkey"],
+    "windows": ["openkey", "vkey", "viettype"],
+    "linux": ["ibus-bamboo", "fcitx5-lotus", "vnkey"]
   }
 }
