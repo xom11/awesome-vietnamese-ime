@@ -120,13 +120,14 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
   const theoNhom = new Map([...NHOM_BO_GO, 'thu_vien'].map(k => [k, []]))
   for (const m of muc) theoNhom.get(chonNhom(m)).push(m)
   const theoId = new Map(muc.map(m => [m.id, m]))
+  const ngayChot = new Date(bayGio).toISOString().slice(0, 10)
 
   const p = [
     '# Awesome Vietnamese IME',
     '',
     'Danh sách bộ gõ tiếng Việt cho máy tính bàn, kèm thư viện cho người muốn tự viết bộ gõ.',
     '',
-    'Số liệu ★, lần push cuối và giấy phép do GitHub Action tự cập nhật hàng tuần — không ai phải sửa tay, nên không lỗi thời.',
+    `Số liệu ★, lần push cuối và giấy phép do GitHub Action tự cập nhật hàng tuần — không ai phải sửa tay, nên không lỗi thời (chốt lần cuối: ${ngayChot}).`,
     '',
     'Nhãn theo lần push gần nhất: 🟢 trong 6 tháng · 🟡 6–24 tháng · 🔴 quá 24 tháng · 📦 repo đã lưu trữ · ⚫ không có mã nguồn công khai · ❓ không truy cập được repo.',
     '',
@@ -139,7 +140,12 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
   ]
 
   for (const os of NEN_TANG_HOP_LE) {
-    const goiY = chon_nhanh[os].map(id => lienKet(theoId.get(id))).join(' · ')
+    const goiY = chon_nhanh[os]
+      .map(id => {
+        const m = theoId.get(id)
+        return `${phanLoaiTrangThai(m, bayGio).nhan} ${lienKet(m)}`
+      })
+      .join(' · ')
     p.push(`| ${TEN_NHOM[os]} | ${goiY} |`)
   }
 
@@ -158,7 +164,7 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     '',
     '---',
     '',
-    `Số liệu chốt ngày ${new Date(bayGio).toISOString().slice(0, 10)}.`,
+    `Số liệu chốt ngày ${ngayChot}.`,
     '',
     'Thiếu bộ gõ nào thì sửa [`data/ime.json`](data/ime.json) — xem [CONTRIBUTING.md](CONTRIBUTING.md). **Đừng sửa README.md, file này do máy sinh ra.**',
     '',

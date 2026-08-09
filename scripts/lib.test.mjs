@@ -245,6 +245,31 @@ test('renderReadme: chân trang có ngày chốt', () => {
   assert.ok(out.includes('Số liệu chốt ngày 2026-08-09'))
 })
 
+test('renderReadme: đoạn mở đầu cũng có ngày chốt, không chỉ chân trang', () => {
+  const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
+  assert.ok(
+    out.includes('(chốt lần cuối: 2026-08-09)'),
+    'câu tuyên bố "tự cập nhật hàng tuần" phải kèm bằng chứng ngay tại chỗ',
+  )
+})
+
+test('renderReadme: Chọn nhanh hiện nhãn trạng thái, không chỉ tên trần', () => {
+  const ds = [
+    mucDay({ pushed_at: truoc(1000) }), // quá 730 ngày -> Ngưng
+    mucDay({ id: 'b', ten: 'B' }),
+  ]
+  const out = renderReadme({
+    muc: ds,
+    chon_nhanh: { macos: ['a', 'b'], windows: ['a', 'b'], linux: ['a', 'b'] },
+    bayGio: BAY_GIO,
+  })
+  const dongChonNhanh = out.split('\n').find(d => d.startsWith('| macOS |'))
+  assert.ok(
+    dongChonNhanh.includes('🔴'),
+    'mục Chọn nhanh đã ngưng hoạt động phải hiện nhãn 🔴, không được im lặng gợi ý',
+  )
+})
+
 import { phanLoaiLoi, vuotNguong } from './lib.mjs'
 
 function hdr(obj = {}) {

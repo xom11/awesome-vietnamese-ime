@@ -2,7 +2,7 @@
 
 Danh sách bộ gõ tiếng Việt cho máy tính bàn, kèm thư viện cho người muốn tự viết bộ gõ.
 
-Số liệu ★, lần push cuối và giấy phép do GitHub Action tự cập nhật hàng tuần — không ai phải sửa tay, nên không lỗi thời.
+Số liệu ★, lần push cuối và giấy phép do GitHub Action tự cập nhật hàng tuần — không ai phải sửa tay, nên không lỗi thời (chốt lần cuối: 2026-08-09).
 
 Nhãn theo lần push gần nhất: 🟢 trong 6 tháng · 🟡 6–24 tháng · 🔴 quá 24 tháng · 📦 repo đã lưu trữ · ⚫ không có mã nguồn công khai · ❓ không truy cập được repo.
 
@@ -12,9 +12,9 @@ Không muốn đọc hết thì lấy một trong những cái này:
 
 | Hệ điều hành | Gợi ý |
 |---|---|
-| macOS | [OpenKey](https://open-key.org) · [Gõ Nhanh](https://gonhanh.org) · [XKey](https://github.com/xmannv/xkey) |
-| Windows | [OpenKey](https://open-key.org) · [VKey](https://github.com/phatMT97/VKey) · [VietType](https://github.com/dinhngtu/VietType) |
-| Linux | [IBus Bamboo](https://github.com/BambooEngine/ibus-bamboo) · [Fcitx5 Lotus](https://lotusinputmethod.github.io/) · [VnKey](https://vnkey.app) |
+| macOS | 🟢 [OpenKey](https://open-key.org) · 🟢 [Gõ Nhanh](https://gonhanh.org) · 🟢 [XKey](https://github.com/xmannv/xkey) |
+| Windows | 🟢 [OpenKey](https://open-key.org) · 🟢 [VKey](https://github.com/phatMT97/VKey) · 🟢 [VietType](https://github.com/dinhngtu/VietType) |
+| Linux | 🟢 [IBus Bamboo](https://github.com/BambooEngine/ibus-bamboo) · 🟢 [Fcitx5 Lotus](https://lotusinputmethod.github.io/) · 🟢 [VnKey](https://vnkey.app) |
 
 ## Bộ gõ
 
