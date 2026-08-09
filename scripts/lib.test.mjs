@@ -157,3 +157,90 @@ test('sapXep: không sửa mảng đầu vào', () => {
   sapXep(ds)
   assert.deepEqual(ds.map(m => m.ten), ['A', 'B'])
 })
+
+import { escapeBang, renderReadme } from './lib.mjs'
+
+test('escapeBang: gạch đứng phải được thoát', () => {
+  assert.equal(escapeBang('a | b'), 'a \\| b')
+})
+
+test('escapeBang: xuống dòng thành khoảng trắng', () => {
+  assert.equal(escapeBang('a\nb\r\nc'), 'a b c')
+})
+
+function mucDay(ghiDe = {}) {
+  return {
+    id: 'a', ten: 'A', repo: 'chu/kho', nen_tang: ['macos'], nhom: 'bo_go',
+    ghi_chu: 'ghi chú', sao: 10, giay_phep: 'MIT',
+    pushed_at: truoc(1), archived: false, loi_truy_cap: false,
+    ...ghiDe,
+  }
+}
+
+function renderThu(ds) {
+  return renderReadme({
+    muc: ds,
+    chon_nhanh: {
+      macos: [ds[0].id, ds[1].id], windows: [ds[0].id, ds[1].id], linux: [ds[0].id, ds[1].id],
+    },
+    bayGio: BAY_GIO,
+  })
+}
+
+test('renderReadme: mỗi mục chỉ nằm trong đúng một bảng', () => {
+  const ds = [mucDay(), mucDay({ id: 'b', ten: 'BeeKey', nen_tang: ['macos', 'linux'] })]
+  const phanBang = renderThu(ds).split('## Bộ gõ')[1]
+  assert.equal(phanBang.split('BeeKey').length - 1, 1, 'không được lặp ở nhiều nhóm')
+  assert.ok(
+    phanBang.split('### Đa nền tảng')[1].includes('BeeKey'),
+    'hai nền tảng thì phải nằm ở nhóm Đa nền tảng',
+  )
+})
+
+test('renderReadme: giấy phép null và NOASSERTION đều thành gạch ngang', () => {
+  const ds = [mucDay({ giay_phep: null }), mucDay({ id: 'b', ten: 'B', giay_phep: 'NOASSERTION' })]
+  const out = renderThu(ds)
+  assert.ok(!out.includes('null'), 'không được lọt chữ null')
+  assert.ok(!out.includes('NOASSERTION'), 'không được lọt NOASSERTION')
+})
+
+test('renderReadme: sao bằng 0 hiện số 0, không phải gạch ngang', () => {
+  const ds = [mucDay({ sao: 0 }), mucDay({ id: 'b', ten: 'B' })]
+  assert.ok(renderThu(ds).includes('| 0 |'))
+})
+
+test('renderReadme: mục không có repo dùng trang_chu làm liên kết', () => {
+  const ds = [
+    mucDay({ repo: null, trang_chu: 'https://unikey.org', sao: null, giay_phep: null, pushed_at: null }),
+    mucDay({ id: 'b', ten: 'B' }),
+  ]
+  assert.ok(renderThu(ds).includes('[A](https://unikey.org)'))
+})
+
+test('renderReadme: gạch đứng trong ghi chú không làm vỡ bảng', () => {
+  const ds = [mucDay({ ghi_chu: 'Telex | VNI' }), mucDay({ id: 'b', ten: 'B' })]
+  const dong = renderThu(ds).split('\n').find(d => d.includes('Telex'))
+  assert.ok(dong.includes('Telex \\| VNI'), 'dấu | trong ghi chú phải được thoát')
+  assert.equal(
+    dong.split(/(?<!\\)\|/).length - 1, 6,
+    'chỉ 6 dấu | chưa thoát = 6 biên cột, dấu đã thoát không sinh cột lạ',
+  )
+})
+
+test('renderReadme: không lọt undefined hay NaN', () => {
+  const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
+  assert.ok(!out.includes('undefined'))
+  assert.ok(!out.includes('NaN'))
+})
+
+test('renderReadme: nhóm rỗng vẫn có tiêu đề và ghi chú trống', () => {
+  const ds = [mucDay(), mucDay({ id: 'b', ten: 'B' })]
+  const out = renderThu(ds)
+  assert.ok(out.includes('### Windows'))
+  assert.ok(out.includes('_Chưa có mục nào._'))
+})
+
+test('renderReadme: chân trang có ngày chốt', () => {
+  const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
+  assert.ok(out.includes('Số liệu chốt ngày 2026-08-09'))
+})
