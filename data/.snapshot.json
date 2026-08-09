@@ -12,7 +12,7 @@
       "ghi_chu": "Bộ gõ macOS viết Rust, tối ưu <10ms độ trễ, tự nhớ chế độ gõ theo từng app.",
       "sao": 748,
       "giay_phep": "BSD-3-Clause",
-      "pushed_at": "2026-08-09T00:09:22Z",
+      "pushed_at": "2026-08-09T10:26:20Z",
       "archived": false,
       "loi_truy_cap": false
     },
@@ -104,7 +104,7 @@
       "ghi_chu": "Bộ gõ Windows nguồn mở, build có ký số qua SignPath, cập nhật rất đều.",
       "sao": 173,
       "giay_phep": "GPL-3.0",
-      "pushed_at": "2026-08-09T05:10:16Z",
+      "pushed_at": "2026-08-09T14:55:40Z",
       "archived": false,
       "loi_truy_cap": false
     },
@@ -182,7 +182,7 @@
       ],
       "nhom": "bo_go",
       "ghi_chu": "Fork từ VMK, gõ không để lại gạch chân preedit, hiện là bản Fcitx5 sống nhất.",
-      "sao": 445,
+      "sao": 446,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-08-09T08:35:44Z",
       "archived": false,
@@ -243,7 +243,7 @@
       ],
       "nhom": "bo_go",
       "ghi_chu": "Dựng trên fcitx5-bamboo, thêm cơ chế không gạch chân kiểu UniKey; alpha, đã dừng.",
-      "sao": 97,
+      "sao": 98,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-02-08T19:55:42Z",
       "archived": false,
@@ -320,7 +320,7 @@
       ],
       "nhom": "bo_go",
       "ghi_chu": "Phổ biến nhất trên macOS, dùng kỹ thuật Backspace; bản cuối 2.0.5 từ 2022.",
-      "sao": 943,
+      "sao": 944,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2026-06-15T15:27:55Z",
       "archived": false,
@@ -397,6 +397,132 @@
       "loi_truy_cap": false
     },
     {
+      "id": "nakl",
+      "ten": "NAKL",
+      "repo": "huyphan/NAKL",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS cũ, dùng lại thuật toán và bảng phím của xvnkb; ngừng từ 2021.",
+      "sao": 85,
+      "giay_phep": "GPL-3.0",
+      "pushed_at": "2021-07-26T13:54:04Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "oreokey",
+      "ten": "OreoKey",
+      "repo": "OreoSolutions/oreokey",
+      "trang_chu": "https://oreokey.vercel.app",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "giay_phep_ghi_tay": "MIT",
+      "ghi_chu": "Lõi Rust, giao diện Swift; chống dính/nháy chữ bằng Accessibility API theo từng app.",
+      "sao": 6,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-07-27T07:29:39Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "viettelex",
+      "ten": "VietTelex",
+      "repo": "ptrinh/viettelex",
+      "trang_chu": "https://viettelex.com",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Input method IMKit thật của macOS, không gạch chân, gõ được cả trong Terminal.",
+      "sao": 5,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-08-07T08:55:07Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "v7",
+      "ten": "v7",
+      "repo": "ducngg/v7",
+      "nen_tang": [
+        "macos"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Kiểu gõ dự đoán từ phụ âm đầu và dấu (bài IJCAI 2025); app PyQt5, đóng gói macOS.",
+      "sao": 101,
+      "giay_phep": "Apache-2.0",
+      "pushed_at": "2025-05-13T02:31:24Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "codekey",
+      "ten": "CodeKey",
+      "repo": "toilaai2212hp22-lgtm/codekeyvn",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Viết Rust, chạy cả IBus lẫn Fcitx5, kèm CLI chuyển chữ dùng thẳng trong terminal.",
+      "sao": 7,
+      "giay_phep": "MIT",
+      "pushed_at": "2026-07-19T14:30:07Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "vi-ime",
+      "ten": "VI-IME",
+      "repo": "nhanth87/vi-ime",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "giay_phep_ghi_tay": "GPL-3.0-only",
+      "ghi_chu": "AppImage cho Wayland niri/Hyprland/Sway, dùng thuật toán NFD/C thay bảng tra vowel.",
+      "sao": 6,
+      "giay_phep": "GPL-3.0-only",
+      "pushed_at": "2026-07-16T05:53:15Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "pinakey",
+      "ten": "PinaKey",
+      "repo": "trananhtung/pinakey",
+      "trang_chu": "https://trananhtung.github.io/pinakey-web/",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Lõi Rust thuần + addon C++ cho Fcitx5, gõ không gạch chân; repo chưa có giấy phép.",
+      "sao": 6,
+      "giay_phep": null,
+      "pushed_at": "2026-07-16T14:40:44Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "fcitx-bogo",
+      "ten": "Fcitx BoGo",
+      "repo": "BoGoEngine/fcitx-bogo",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "giay_phep_ghi_tay": "GPL-3.0-or-later",
+      "ghi_chu": "Cầu nối engine BoGo sang Fcitx, viết Python 2; ngừng phát triển từ 2017.",
+      "sao": 12,
+      "giay_phep": "GPL-3.0-or-later",
+      "pushed_at": "2017-12-08T08:34:16Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
       "id": "vi-rs",
       "ten": "vi-rs",
       "repo": "ZeroX-DG/vi-rs",
@@ -458,6 +584,24 @@
       "sao": 15,
       "giay_phep": "GPL-3.0",
       "pushed_at": "2014-08-10T05:39:58Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
+      "id": "libunikey",
+      "ten": "libunikey",
+      "repo": "vn-input/libunikey",
+      "nen_tang": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "nhom": "thu_vien",
+      "giay_phep_ghi_tay": "LGPL-2.0-only",
+      "ghi_chu": "Thư viện C++ xử lý văn bản tiếng Việt, dựng trên ukengine của UniKey.",
+      "sao": 4,
+      "giay_phep": "LGPL-2.0-only",
+      "pushed_at": "2023-06-18T06:15:05Z",
       "archived": false,
       "loi_truy_cap": false
     }

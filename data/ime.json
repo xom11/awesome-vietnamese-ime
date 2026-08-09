@@ -212,6 +212,76 @@
       "ghi_chu": "Có kiểm tra chính tả và gợi ý từ ghép; không có mã nguồn công khai."
     },
     {
+      "id": "nakl",
+      "ten": "NAKL",
+      "repo": "huyphan/NAKL",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Bộ gõ macOS cũ, dùng lại thuật toán và bảng phím của xvnkb; ngừng từ 2021."
+    },
+    {
+      "id": "oreokey",
+      "ten": "OreoKey",
+      "repo": "OreoSolutions/oreokey",
+      "trang_chu": "https://oreokey.vercel.app",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "giay_phep_ghi_tay": "MIT",
+      "ghi_chu": "Lõi Rust, giao diện Swift; chống dính/nháy chữ bằng Accessibility API theo từng app."
+    },
+    {
+      "id": "viettelex",
+      "ten": "VietTelex",
+      "repo": "ptrinh/viettelex",
+      "trang_chu": "https://viettelex.com",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Input method IMKit thật của macOS, không gạch chân, gõ được cả trong Terminal."
+    },
+    {
+      "id": "v7",
+      "ten": "v7",
+      "repo": "ducngg/v7",
+      "nen_tang": ["macos"],
+      "nhom": "bo_go",
+      "ghi_chu": "Kiểu gõ dự đoán từ phụ âm đầu và dấu (bài IJCAI 2025); app PyQt5, đóng gói macOS."
+    },
+    {
+      "id": "codekey",
+      "ten": "CodeKey",
+      "repo": "toilaai2212hp22-lgtm/codekeyvn",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Viết Rust, chạy cả IBus lẫn Fcitx5, kèm CLI chuyển chữ dùng thẳng trong terminal."
+    },
+    {
+      "id": "vi-ime",
+      "ten": "VI-IME",
+      "repo": "nhanth87/vi-ime",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "giay_phep_ghi_tay": "GPL-3.0-only",
+      "ghi_chu": "AppImage cho Wayland niri/Hyprland/Sway, dùng thuật toán NFD/C thay bảng tra vowel."
+    },
+    {
+      "id": "pinakey",
+      "ten": "PinaKey",
+      "repo": "trananhtung/pinakey",
+      "trang_chu": "https://trananhtung.github.io/pinakey-web/",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Lõi Rust thuần + addon C++ cho Fcitx5, gõ không gạch chân; repo chưa có giấy phép."
+    },
+    {
+      "id": "fcitx-bogo",
+      "ten": "Fcitx BoGo",
+      "repo": "BoGoEngine/fcitx-bogo",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "giay_phep_ghi_tay": "GPL-3.0-or-later",
+      "ghi_chu": "Cầu nối engine BoGo sang Fcitx, viết Python 2; ngừng phát triển từ 2017."
+    },
+    {
       "id": "vi-rs",
       "ten": "vi-rs",
       "repo": "ZeroX-DG/vi-rs",
@@ -243,6 +313,15 @@
       "nen_tang": ["linux"],
       "nhom": "thu_vien",
       "ghi_chu": "Thư viện Python lập trình hàm để viết bộ gõ, ngừng phát triển từ 2014."
+    },
+    {
+      "id": "libunikey",
+      "ten": "libunikey",
+      "repo": "vn-input/libunikey",
+      "nen_tang": ["linux", "macos", "windows"],
+      "nhom": "thu_vien",
+      "giay_phep_ghi_tay": "LGPL-2.0-only",
+      "ghi_chu": "Thư viện C++ xử lý văn bản tiếng Việt, dựng trên ukengine của UniKey."
     }
   ],
   "chon_nhanh": {
