@@ -75,3 +75,45 @@ test('validateData: ghi_chu quá 90 ký tự thì ném lỗi', () => {
     /ghi_chu quá 90 ký tự/,
   )
 })
+
+import { phanLoaiTrangThai } from './lib.mjs'
+
+const NGAY = 86_400_000
+const BAY_GIO = Date.parse('2026-08-09T00:00:00Z')
+
+function truoc(soNgay) {
+  return new Date(BAY_GIO - soNgay * NGAY).toISOString()
+}
+
+function mucApi(ghiDe = {}) {
+  return { repo: 'chu/kho', archived: false, pushed_at: truoc(0), loi_truy_cap: false, ...ghiDe }
+}
+
+test('phanLoaiTrangThai: mới push hôm nay là hoạt động', () => {
+  assert.equal(phanLoaiTrangThai(mucApi(), BAY_GIO).nhan, '🟢')
+})
+
+test('phanLoaiTrangThai: biên 183 ngày vẫn hoạt động, 184 ngày là chậm', () => {
+  assert.equal(phanLoaiTrangThai(mucApi({ pushed_at: truoc(183) }), BAY_GIO).nhan, '🟢')
+  assert.equal(phanLoaiTrangThai(mucApi({ pushed_at: truoc(184) }), BAY_GIO).nhan, '🟡')
+})
+
+test('phanLoaiTrangThai: biên 730 ngày vẫn chậm, 731 ngày là ngưng', () => {
+  assert.equal(phanLoaiTrangThai(mucApi({ pushed_at: truoc(730) }), BAY_GIO).nhan, '🟡')
+  assert.equal(phanLoaiTrangThai(mucApi({ pushed_at: truoc(731) }), BAY_GIO).nhan, '🔴')
+})
+
+test('phanLoaiTrangThai: archived đè lên mọi mốc ngày', () => {
+  assert.equal(phanLoaiTrangThai(mucApi({ archived: true, pushed_at: truoc(1) }), BAY_GIO).nhan, '📦')
+})
+
+test('phanLoaiTrangThai: không có repo là không rõ', () => {
+  assert.equal(phanLoaiTrangThai(mucApi({ repo: null, pushed_at: null }), BAY_GIO).nhan, '⚫')
+})
+
+test('phanLoaiTrangThai: lỗi truy cập đè lên tất cả', () => {
+  assert.equal(
+    phanLoaiTrangThai(mucApi({ loi_truy_cap: true, archived: true, pushed_at: null }), BAY_GIO).nhan,
+    '❓',
+  )
+})

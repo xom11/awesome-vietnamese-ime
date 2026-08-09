@@ -47,3 +47,18 @@ export function validateData(data) {
 
   if (loi.length) throw new Error('Dữ liệu sai:\n  ' + loi.join('\n  '))
 }
+
+const NGAY = 86_400_000
+const NGUONG_HOAT_DONG = 183
+const NGUONG_CHAM = 730
+
+export function phanLoaiTrangThai(muc, bayGio) {
+  if (muc.loi_truy_cap) return { nhan: '❓', ten: 'Lỗi truy cập' }
+  if (!muc.repo) return { nhan: '⚫', ten: 'Không rõ' }
+  if (muc.archived) return { nhan: '📦', ten: 'Lưu trữ' }
+
+  const soNgay = Math.floor((bayGio - Date.parse(muc.pushed_at)) / NGAY)
+  if (soNgay <= NGUONG_HOAT_DONG) return { nhan: '🟢', ten: 'Hoạt động' }
+  if (soNgay <= NGUONG_CHAM) return { nhan: '🟡', ten: 'Chậm' }
+  return { nhan: '🔴', ten: 'Ngưng' }
+}
