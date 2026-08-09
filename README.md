@@ -43,6 +43,7 @@ Không muốn đọc hết thì lấy một trong những cái này:
 |---|---:|---|---|---|
 | [IBus Bamboo](https://github.com/BambooEngine/ibus-bamboo) | 1491 | 🟢 2026-07 | GPL-3.0 | Bộ gõ IBus nhiều sao nhất Linux, nhưng tác giả tự nhận dự án đã đình trệ. |
 | [Fcitx5 Lotus](https://lotusinputmethod.github.io/) | 445 | 🟢 2026-08 | GPL-3.0 | Bộ gõ Fcitx5 cho Linux, không để lại gạch chân preedit khi gõ. |
+| [Fcitx5 Unikey](https://github.com/fcitx/fcitx5-unikey) | 123 | 🟢 2026-06 | — | Nhân Unikey cho Fcitx5; README ibus-bamboo khuyên chuyển sang nếu chạy Wayland. |
 | [Viet+](https://github.com/vndangkhoa/vietc) | 62 | 🟢 2026-07 | MIT | Gõ Linux qua uinput trực tiếp, không qua khung IBus/Fcitx, còn thử nghiệm. |
 | [xvnkb](https://github.com/lamdao/xvnkb) | 5 | 🔴 2015-09 | — | Bộ gõ X-Window cũ, ngừng phát triển từ 2015, giữ lại vì giá trị lịch sử. |
 

@@ -172,6 +172,21 @@
       "loi_truy_cap": false
     },
     {
+      "id": "fcitx5-unikey",
+      "ten": "Fcitx5 Unikey",
+      "repo": "fcitx/fcitx5-unikey",
+      "nen_tang": [
+        "linux"
+      ],
+      "nhom": "bo_go",
+      "ghi_chu": "Nhân Unikey cho Fcitx5; README ibus-bamboo khuyên chuyển sang nếu chạy Wayland.",
+      "sao": 123,
+      "giay_phep": null,
+      "pushed_at": "2026-06-20T06:35:32Z",
+      "archived": false,
+      "loi_truy_cap": false
+    },
+    {
       "id": "vietc",
       "ten": "Viet+",
       "repo": "vndangkhoa/vietc",
