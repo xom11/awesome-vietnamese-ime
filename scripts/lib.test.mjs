@@ -1,11 +1,14 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { validateData } from './lib.mjs'
+import { NEN_TANG_HOP_LE, validateData } from './lib.mjs'
 
 function muc(ghiDe = {}) {
+  // Mặc định đủ ba nền tảng vì helper data() dưới đây đưa mục này vào
+  // chon_nhanh của cả ba OS, mà validateData bắt gợi ý phải chạy được trên OS
+  // tương ứng. Test nào cần một nền tảng thì tự khai đè.
   return {
     id: 'a', ten: 'A', repo: 'chu/kho',
-    nen_tang: ['macos'], nhom: 'bo_go', ghi_chu: 'ghi chú',
+    nen_tang: [...NEN_TANG_HOP_LE], nhom: 'bo_go', ghi_chu: 'ghi chú',
     ...ghiDe,
   }
 }
@@ -314,4 +317,242 @@ test('vuotNguong: trên 30% thì vượt', () => {
 
 test('vuotNguong: không có repo nào thì không bao giờ vượt', () => {
   assert.equal(vuotNguong(0, 0), false)
+})
+
+// ---------------------------------------------------------------------------
+// Nhãn cho repo chưa có commit nào
+// ---------------------------------------------------------------------------
+
+test('phanLoaiTrangThai: pushed_at null mà repo vẫn sống thì là ⚪, KHÔNG phải 🔴', () => {
+  // GitHub trả pushed_at: null cho repo tạo xong chưa push gì. Date.parse(null)
+  // ra NaN, mọi so sánh <= thành false, và nếu không chặn thì rơi thẳng xuống
+  // nhánh cuối 🔴 "quá 24 tháng" — README khẳng định một điều nó không hề biết.
+  assert.equal(phanLoaiTrangThai(mucApi({ pushed_at: null }), BAY_GIO).nhan, '⚪')
+  assert.equal(phanLoaiTrangThai(mucApi({ pushed_at: 'khong-phai-ngay' }), BAY_GIO).nhan, '⚪')
+})
+
+test('phanLoaiTrangThai: archived vẫn thắng cả khi pushed_at hỏng', () => {
+  assert.equal(phanLoaiTrangThai(mucApi({ archived: true, pushed_at: null }), BAY_GIO).nhan, '📦')
+})
+
+// ---------------------------------------------------------------------------
+// Giấy phép: NOASSERTION, và trường ghi tay cho ca API không biết
+// ---------------------------------------------------------------------------
+
+import { chonGiayPhep, lechGiayPhep } from './lib.mjs'
+
+test('renderReadme: NOASSERTION hiện "khác", null vẫn hiện gạch ngang', () => {
+  const ds = [mucDay({ giay_phep: 'NOASSERTION' }), mucDay({ id: 'b', ten: 'B', giay_phep: null })]
+  const out = renderThu(ds)
+  assert.ok(!out.includes('NOASSERTION'), 'không được để lọt chuỗi thô')
+  assert.ok(out.includes('| khác |'), 'NOASSERTION = có giấy phép nhưng không chuẩn SPDX')
+  assert.ok(out.includes('| — |'), 'null = GitHub không nhận ra giấy phép nào')
+})
+
+test('chonGiayPhep: chỉ ghi tay khi API không biết', () => {
+  assert.equal(chonGiayPhep({ giay_phep: null, giay_phep_ghi_tay: 'GPL-2.0-or-later' }), 'GPL-2.0-or-later')
+  assert.equal(chonGiayPhep({ giay_phep: 'NOASSERTION', giay_phep_ghi_tay: 'BSD-3-Clause' }), 'BSD-3-Clause')
+  assert.equal(chonGiayPhep({ giay_phep: null, giay_phep_ghi_tay: undefined }), null)
+})
+
+test('chonGiayPhep: API biết một nửa thì ghi tay bù nốt nửa kia', () => {
+  // GitHub chỉ trả về một SPDX id, nên repo `MIT OR Apache-2.0` hiện thành
+  // `Apache-2.0` — người viết bộ gõ GPLv2 sẽ loại nhầm thư viện đó.
+  assert.equal(
+    chonGiayPhep({ giay_phep: 'Apache-2.0', giay_phep_ghi_tay: 'MIT OR Apache-2.0' }),
+    'MIT OR Apache-2.0',
+  )
+  assert.equal(lechGiayPhep({ giay_phep: 'Apache-2.0', giay_phep_ghi_tay: 'MIT OR Apache-2.0' }), false)
+})
+
+test('chonGiayPhep: API biết thì API thắng — ghi tay không được đè', () => {
+  // Chốt chống lệch: thượng nguồn thêm file LICENSE là giá trị ghi tay thành đồ
+  // giả. API thắng, và lechGiayPhep() bật cờ để build.mjs kêu lên.
+  assert.equal(chonGiayPhep({ giay_phep: 'MIT', giay_phep_ghi_tay: 'GPL-3.0' }), 'MIT')
+  assert.equal(lechGiayPhep({ giay_phep: 'MIT', giay_phep_ghi_tay: 'GPL-3.0' }), true)
+  assert.equal(lechGiayPhep({ giay_phep: 'MIT', giay_phep_ghi_tay: 'MIT OR Apache-2.0' }), false)
+  assert.equal(lechGiayPhep({ giay_phep: null, giay_phep_ghi_tay: 'GPL-2.0-or-later' }), false)
+  assert.equal(lechGiayPhep({ giay_phep: 'MIT' }), false)
+})
+
+// ---------------------------------------------------------------------------
+// Thoát ký tự: ngoặc vuông trong tên, gạch đứng trong URL
+// ---------------------------------------------------------------------------
+
+test('renderReadme: ngoặc vuông trong tên không giết liên kết', () => {
+  const ds = [mucDay({ ten: 'Bộ [gõ] X' }), mucDay({ id: 'b', ten: 'B' })]
+  assert.ok(renderThu(ds).includes('[Bộ \\[gõ\\] X](https://github.com/chu/kho)'))
+})
+
+test('renderReadme: gạch đứng trong URL không đẩy lệch cột', () => {
+  const ds = [
+    mucDay({ trang_chu: 'https://vi.du/a|b' }),
+    mucDay({ id: 'b', ten: 'B' }),
+  ]
+  // Chọn nhanh cũng chứa liên kết này; lấy đúng dòng của bảng bộ gõ.
+  const dong = renderThu(ds).split('\n').find(d => d.startsWith('| [A]') && d.includes('vi.du'))
+  assert.ok(dong.includes('%7C'), 'phải percent-encode, không được để | thô trong URL')
+  assert.equal(dong.split(/(?<!\\)\|/).length - 1, 6, 'vẫn đúng 6 biên cột')
+})
+
+// ---------------------------------------------------------------------------
+// validateData: những đường im lặng làm hỏng dữ liệu
+// ---------------------------------------------------------------------------
+
+test('validateData: khoá lạ bị chặn, không im lặng bỏ qua', () => {
+  // Gõ "trangchu" thay "trang_chu" cho một mục repo:null là mất sạch liên kết
+  // mà cả hai cổng CI vẫn xanh.
+  assert.throws(
+    () => validateData(data([muc({ trangchu: 'https://vi.du' }), muc({ id: 'b', ten: 'B' })])),
+    /khoá lạ "trangchu"/,
+  )
+})
+
+test('validateData: trang_chu phải là URL http(s)', () => {
+  assert.doesNotThrow(() =>
+    validateData(data([muc({ trang_chu: 'https://vi.du/x' }), muc({ id: 'b', ten: 'B' })])))
+  for (const xau of ['vi.du', 'javascript:alert(1)', 'https://vi.du/a b', '']) {
+    assert.throws(
+      () => validateData(data([muc({ trang_chu: xau }), muc({ id: 'b', ten: 'B' })])),
+      /trang_chu/,
+      `phải chặn "${xau}"`,
+    )
+  }
+})
+
+test('validateData: trường bắt buộc toàn khoảng trắng cũng là thiếu', () => {
+  assert.throws(
+    () => validateData(data([muc({ ghi_chu: '   ' }), muc({ id: 'b', ten: 'B' })])),
+    /thiếu trường "ghi_chu"/,
+  )
+})
+
+test('validateData: nen_tang trùng lặp thì ném lỗi', () => {
+  assert.throws(
+    () => validateData(data([muc({ nen_tang: ['macos', 'macos'] }), muc({ id: 'b', ten: 'B' })])),
+    /nen_tang trùng "macos"/,
+  )
+})
+
+test('validateData: giay_phep_ghi_tay chỉ dùng được cho mục có repo', () => {
+  assert.doesNotThrow(() =>
+    validateData(data([muc({ giay_phep_ghi_tay: 'MIT OR Apache-2.0' }), muc({ id: 'b', ten: 'B' })])))
+  assert.throws(
+    () => validateData(data([muc({ repo: null, giay_phep_ghi_tay: 'GPL-3.0' }), muc({ id: 'b', ten: 'B' })])),
+    /giay_phep_ghi_tay/,
+  )
+})
+
+test('validateData: chon_nhanh không được trỏ mục không chạy trên OS đó', () => {
+  // Gõ nhầm một id chỉ-macOS vào cột Linux sẽ xuất bản một gợi ý sai kèm nhãn 🟢.
+  const d = data([muc({ nen_tang: ['macos'] }), muc({ id: 'b', ten: 'B', nen_tang: ['macos'] })])
+  assert.throws(() => validateData(d), /chon_nhanh\.linux: "a" không chạy trên linux/)
+})
+
+test('validateData: chon_nhanh nhận mục đa nền tảng cho từng OS nó hỗ trợ', () => {
+  // VnKey (mac+win+linux) làm gợi ý Linux là hợp lệ — đừng cấm nhầm.
+  const d = data([
+    muc({ nen_tang: ['macos', 'windows', 'linux'] }),
+    muc({ id: 'b', ten: 'B', nen_tang: ['macos', 'windows', 'linux'] }),
+  ])
+  assert.doesNotThrow(() => validateData(d))
+})
+
+test('validateData: chon_nhanh không được trỏ vào thư viện', () => {
+  const d = data([muc({ nhom: 'thu_vien', nen_tang: NEN_TANG_HOP_LE }), muc({ id: 'b', ten: 'B', nen_tang: NEN_TANG_HOP_LE })])
+  assert.throws(() => validateData(d), /chon_nhanh\.macos: "a" là thư viện/)
+})
+
+test('validateData: chon_nhanh trùng id trong cùng một OS thì ném lỗi', () => {
+  const d = data(); d.chon_nhanh.macos = ['a', 'a']
+  assert.throws(() => validateData(d), /chon_nhanh\.macos: id trùng "a"/)
+})
+
+test('validateData: khoá lạ trong chon_nhanh bị chặn', () => {
+  const d = data(); d.chon_nhanh.bsd = ['a', 'b']
+  assert.throws(() => validateData(d), /chon_nhanh: khoá lạ "bsd"/)
+})
+
+// ---------------------------------------------------------------------------
+// README: cột nền tảng, dòng dẫn sang bảng đa nền tảng, ★ trong Chọn nhanh
+// ---------------------------------------------------------------------------
+
+test('renderReadme: bảng đa nền tảng và thư viện có cột Nền tảng, bảng theo OS thì không', () => {
+  const ds = [
+    mucDay({ id: 'da', ten: 'Da', nen_tang: ['macos', 'windows'] }),
+    mucDay({ id: 'tv', ten: 'Tv', nhom: 'thu_vien', nen_tang: ['linux'] }),
+    mucDay({ id: 'm', ten: 'M', nen_tang: ['macos'] }),
+  ]
+  const out = renderReadme({
+    muc: ds,
+    chon_nhanh: { macos: ['da', 'm'], windows: ['da', 'm'], linux: ['da', 'tv'] },
+    bayGio: BAY_GIO,
+  })
+  const bangMac = out.split('### macOS')[1].split('###')[0]
+  const bangDa = out.split('### Đa nền tảng')[1].split('\n## ')[0]
+  assert.ok(!bangMac.includes('Nền tảng'), 'bảng một OS thì cột nền tảng chỉ toàn giá trị giống nhau')
+  assert.ok(bangDa.includes('| Tên | Nền tảng |'), 'bảng đa nền tảng phải nói rõ chạy ở đâu')
+  assert.ok(bangDa.includes('mac · win'))
+  assert.ok(out.split('## Thư viện & engine')[1].includes('| Tên | Nền tảng |'))
+})
+
+test('renderReadme: mỗi bảng OS dẫn sang những mục đa nền tảng cũng chạy trên OS đó', () => {
+  const ds = [
+    mucDay({ id: 'da', ten: 'Da', nen_tang: ['macos', 'windows'] }),
+    mucDay({ id: 'm', ten: 'M', nen_tang: ['macos'] }),
+  ]
+  const out = renderReadme({
+    muc: ds,
+    chon_nhanh: { macos: ['da', 'm'], windows: ['da', 'm'], linux: ['da', 'm'] },
+    bayGio: BAY_GIO,
+  })
+  const bangMac = out.split('### macOS')[1].split('### ')[0]
+  assert.ok(
+    /1 bộ gõ đa nền tảng/.test(bangMac),
+    'bảng macOS hiện chỉ 1/2 mục chạy macOS — phải nói ra chỗ còn lại',
+  )
+  assert.ok(bangMac.includes('#đa-nền-tảng'), 'phải neo được sang bảng kia')
+  const bangLinux = out.split('### Linux')[1].split('### ')[0]
+  assert.ok(!/bộ gõ đa nền tảng/.test(bangLinux), 'không có mục nào thì đừng in dòng thừa')
+})
+
+test('renderReadme: Chọn nhanh hiện ★ để so được, không chỉ nhãn màu', () => {
+  const ds = [mucDay({ sao: 943 }), mucDay({ id: 'b', ten: 'B', sao: null, repo: null, pushed_at: null })]
+  const dong = renderThu(ds).split('\n').find(d => d.startsWith('| macOS |'))
+  assert.ok(dong.includes('943★'), 'ba gợi ý cùng nhãn 🟢 thì ★ là thứ duy nhất so được')
+  assert.ok(!dong.includes('null'), 'mục không có ★ thì bỏ hẳn, không in null★')
+})
+
+test('renderReadme: không còn hứa "không lỗi thời"', () => {
+  // renderReadme là hàm thuần, không có cách nào biết Action còn sống hay PAT
+  // đã hết hạn — nên nó không được phép hứa thay.
+  const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
+  assert.ok(!out.includes('không lỗi thời'))
+  assert.ok(out.includes('(chốt lần cuối: 2026-08-09)'), 'vẫn phải có bằng chứng ngày ngay tại chỗ')
+})
+
+test('renderReadme: có lối đóng góp cho người không dùng Git', () => {
+  const out = renderThu([mucDay(), mucDay({ id: 'b', ten: 'B' })])
+  assert.ok(/issues\/new/.test(out), 'phải mời mở issue')
+  assert.ok(!/github\.com\/[a-z0-9-]+\/awesome/i.test(out), 'lib.mjs là file thuần, đừng hardcode URL repo')
+})
+
+// ---------------------------------------------------------------------------
+// So sánh README cũ/mới: chỉ bỏ qua đúng hai câu ngày chốt
+// ---------------------------------------------------------------------------
+
+import { boQuaNgayChot } from './lib.mjs'
+
+test('boQuaNgayChot: hai câu ngày chốt bị bỏ qua', () => {
+  const a = 'x (chốt lần cuối: 2026-08-09) y\nSố liệu chốt ngày 2026-08-09.\n'
+  const b = 'x (chốt lần cuối: 2026-09-01) y\nSố liệu chốt ngày 2026-09-01.\n'
+  assert.equal(boQuaNgayChot(a), boQuaNgayChot(b))
+})
+
+test('boQuaNgayChot: ngày nằm trong ghi chú KHÔNG được nuốt', () => {
+  // Regex quét cả file sẽ nuốt luôn đính chính kiểu "ngừng từ 2013-11-05" →
+  // build in "Số liệu không đổi", không ghi file, không cảnh báo, CI xanh.
+  const a = '| X | 1 | 🔴 2013-11 | MIT | Ngừng từ 2013-11-05. |'
+  const b = '| X | 1 | 🔴 2013-11 | MIT | Ngừng từ 2014-08-20. |'
+  assert.notEqual(boQuaNgayChot(a), boQuaNgayChot(b))
 })

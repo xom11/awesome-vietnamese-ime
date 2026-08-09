@@ -1,6 +1,22 @@
 export const NEN_TANG_HOP_LE = ['macos', 'windows', 'linux']
 export const NHOM_HOP_LE = ['bo_go', 'thu_vien']
 
+// Allowlist, không phải danh sách gợi ý: khoá nào không có ở đây là lỗi. Gõ
+// "trangchu" thay "trang_chu" từng lọt qua cả hai cổng CI mà vẫn xanh, chỉ mất
+// im lặng liên kết của một mục.
+const KHOA_HOP_LE = new Set([
+  'id', 'ten', 'repo', 'trang_chu', 'nen_tang', 'nhom', 'ghi_chu', 'giay_phep_ghi_tay',
+])
+
+function urlHopLe(s) {
+  if (typeof s !== 'string' || s === '' || /\s/.test(s)) return false
+  try {
+    return ['http:', 'https:'].includes(new URL(s).protocol)
+  } catch {
+    return false
+  }
+}
+
 export function validateData(data) {
   if (!data || typeof data !== 'object') throw new Error('ime.json phải là một object')
   if (!Array.isArray(data.muc)) throw new Error('ime.json thiếu mảng "muc"')
@@ -8,22 +24,32 @@ export function validateData(data) {
     throw new Error('ime.json thiếu object "chon_nhanh"')
 
   const loi = []
-  const ids = new Set()
+  const theoId = new Map()
 
   for (const [i, m] of data.muc.entries()) {
     const o = `muc[${i}]`
+    for (const t of Object.keys(m)) if (!KHOA_HOP_LE.has(t)) loi.push(`${o}: khoá lạ "${t}"`)
+
     for (const t of ['id', 'ten', 'nhom', 'ghi_chu']) {
-      if (typeof m[t] !== 'string' || m[t] === '') loi.push(`${o}: thiếu trường "${t}"`)
+      if (typeof m[t] !== 'string' || m[t].trim() === '') loi.push(`${o}: thiếu trường "${t}"`)
     }
     if (!('repo' in m)) loi.push(`${o}: thiếu trường "repo" (dùng null nếu không có mã nguồn công khai)`)
     else if (m.repo !== null && !/^[^/\s]+\/[^/\s]+$/.test(String(m.repo)))
       loi.push(`${o}: repo phải dạng "owner/name", nhận "${m.repo}"`)
 
+    if ('trang_chu' in m && !urlHopLe(m.trang_chu))
+      loi.push(`${o}: trang_chu phải là URL http(s) không khoảng trắng, nhận "${m.trang_chu}"`)
+
     if (!Array.isArray(m.nen_tang) || m.nen_tang.length === 0)
       loi.push(`${o}: nen_tang phải là mảng không rỗng`)
-    else
-      for (const nt of m.nen_tang)
+    else {
+      const da = new Set()
+      for (const nt of m.nen_tang) {
         if (!NEN_TANG_HOP_LE.includes(nt)) loi.push(`${o}: nen_tang lạ "${nt}"`)
+        if (da.has(nt)) loi.push(`${o}: nen_tang trùng "${nt}"`)
+        da.add(nt)
+      }
+    }
 
     if (typeof m.nhom === 'string' && m.nhom !== '' && !NHOM_HOP_LE.includes(m.nhom))
       loi.push(`${o}: nhom lạ "${m.nhom}"`)
@@ -31,9 +57,21 @@ export function validateData(data) {
     if (typeof m.ghi_chu === 'string' && m.ghi_chu.length > 90)
       loi.push(`${o}: ghi_chu quá 90 ký tự (${m.ghi_chu.length})`)
 
-    if (ids.has(m.id)) loi.push(`${o}: id trùng "${m.id}"`)
-    ids.add(m.id)
+    // Ghi tay chỉ để lấp chỗ API mù. Mục không có repo thì không có API nào để
+    // mù cả — giấy phép của nó thuộc về ghi_chu.
+    if ('giay_phep_ghi_tay' in m) {
+      if (typeof m.giay_phep_ghi_tay !== 'string' || m.giay_phep_ghi_tay.trim() === '')
+        loi.push(`${o}: giay_phep_ghi_tay phải là chuỗi không rỗng`)
+      else if (m.repo === null)
+        loi.push(`${o}: giay_phep_ghi_tay chỉ dùng cho mục có repo`)
+    }
+
+    if (theoId.has(m.id)) loi.push(`${o}: id trùng "${m.id}"`)
+    theoId.set(m.id, m)
   }
+
+  for (const os of Object.keys(data.chon_nhanh))
+    if (!NEN_TANG_HOP_LE.includes(os)) loi.push(`chon_nhanh: khoá lạ "${os}"`)
 
   for (const os of NEN_TANG_HOP_LE) {
     const ds = data.chon_nhanh[os]
@@ -41,8 +79,23 @@ export function validateData(data) {
       loi.push(`chon_nhanh.${os}: phải có 2–3 id`)
       continue
     }
-    for (const id of ds)
-      if (!ids.has(id)) loi.push(`chon_nhanh.${os}: id không tồn tại "${id}"`)
+    const da = new Set()
+    for (const id of ds) {
+      if (da.has(id)) loi.push(`chon_nhanh.${os}: id trùng "${id}"`)
+      da.add(id)
+
+      const m = theoId.get(id)
+      if (!m) {
+        loi.push(`chon_nhanh.${os}: id không tồn tại "${id}"`)
+        continue
+      }
+      // Gõ nhầm một id chỉ-macOS vào cột Linux xuất bản một gợi ý sai kèm nhãn
+      // 🟢. Mục đa nền tảng thì hợp lệ ở mọi OS nó khai — đừng cấm nhầm.
+      if (Array.isArray(m.nen_tang) && !m.nen_tang.includes(os))
+        loi.push(`chon_nhanh.${os}: "${id}" không chạy trên ${os}`)
+      if (m.nhom === 'thu_vien')
+        loi.push(`chon_nhanh.${os}: "${id}" là thư viện, không phải bộ gõ để dùng`)
+    }
   }
 
   if (loi.length) throw new Error('Dữ liệu sai:\n  ' + loi.join('\n  '))
@@ -57,10 +110,41 @@ export function phanLoaiTrangThai(muc, bayGio) {
   if (!muc.repo) return { nhan: '⚫', ten: 'Không rõ' }
   if (muc.archived) return { nhan: '📦', ten: 'Lưu trữ' }
 
-  const soNgay = Math.floor((bayGio - Date.parse(muc.pushed_at)) / NGAY)
+  // GitHub trả pushed_at: null cho repo chưa có commit nào. Không chặn thì
+  // Date.parse ra NaN, mọi so sánh dưới thành false và mục rơi thẳng xuống 🔴
+  // "quá 24 tháng" — một khẳng định mà dữ liệu không hề chứa.
+  const moc = Date.parse(muc.pushed_at)
+  if (!Number.isFinite(moc)) return { nhan: '⚪', ten: 'Chưa có commit' }
+
+  const soNgay = Math.floor((bayGio - moc) / NGAY)
   if (soNgay <= NGUONG_HOAT_DONG) return { nhan: '🟢', ten: 'Hoạt động' }
   if (soNgay <= NGUONG_CHAM) return { nhan: '🟡', ten: 'Chậm' }
   return { nhan: '🔴', ten: 'Ngưng' }
+}
+
+// GitHub chỉ đọc được giấy phép khi repo có file LICENSE nó phân tích được, và
+// kể cả khi đọc được thì nó cũng chỉ trả về MỘT id: repo dual-license
+// `MIT OR Apache-2.0` chỉ hiện `Apache-2.0`, mất hẳn nhánh MIT — đúng cột quyết
+// định của bảng Thư viện. Ghi tay được chấp nhận trong đúng hai ca đó:
+//   - API không biết gì (`null`, hoặc `NOASSERTION` = có file nhưng lệch SPDX);
+//   - API biết một phần, tức id nó trả về nằm trong biểu thức ghi tay.
+// Ngoài hai ca đó, API thắng và lechGiayPhep() bật cờ.
+function apiKhongBiet(giay_phep) {
+  return giay_phep === null || giay_phep === undefined || giay_phep === 'NOASSERTION'
+}
+
+export function chonGiayPhep({ giay_phep, giay_phep_ghi_tay }) {
+  if (!giay_phep_ghi_tay) return giay_phep ?? null
+  if (apiKhongBiet(giay_phep)) return giay_phep_ghi_tay
+  if (giay_phep_ghi_tay.includes(giay_phep)) return giay_phep_ghi_tay
+  return giay_phep
+}
+
+// Thượng nguồn đổi giấy phép là giá trị ghi tay hoá đồ giả im lặng. API thắng,
+// và cờ này để build.mjs kêu lên thay vì in mãi giá trị cũ.
+export function lechGiayPhep({ giay_phep, giay_phep_ghi_tay }) {
+  if (!giay_phep_ghi_tay || apiKhongBiet(giay_phep)) return false
+  return !giay_phep_ghi_tay.includes(giay_phep)
 }
 
 export function chonNhom(muc) {
@@ -85,34 +169,49 @@ const TEN_NHOM = {
   da_nen: 'Đa nền tảng',
   thu_vien: 'Thư viện & engine',
 }
+const TEN_NEN_TANG_NGAN = { macos: 'mac', windows: 'win', linux: 'linux' }
 const NHOM_BO_GO = ['macos', 'windows', 'linux', 'da_nen']
 
 export function escapeBang(s) {
   return String(s).replace(/\r?\n/g, ' ').replace(/\|/g, '\\|').trim()
 }
 
+// Ngoặc vuông chưa thoát trong link text cắt liên kết làm đôi.
+function escapeTen(s) {
+  return escapeBang(s).replace(/([[\]])/g, '\\$1')
+}
+
 function o(v) {
-  return v === null || v === undefined || v === 'NOASSERTION' ? '—' : String(v)
+  if (v === null || v === undefined) return '—'
+  if (v === 'NOASSERTION') return 'khác'
+  return String(v)
 }
 
 function lienKet(m) {
   const url = m.trang_chu || (m.repo ? `https://github.com/${m.repo}` : null)
-  const ten = escapeBang(m.ten)
-  return url ? `[${ten}](${url})` : ten
+  const ten = escapeTen(m.ten)
+  // Không dùng encodeURI: nó mã hoá hai lần một URL vốn đã percent-encode.
+  // Chỉ `|` mới phá bảng markdown, và nó không hợp lệ trong URL thô.
+  return url ? `[${ten}](${url.replace(/\|/g, '%7C')})` : ten
 }
 
-function dongBang(m, bayGio) {
+function dongBang(m, bayGio, cotNenTang) {
   const tt = phanLoaiTrangThai(m, bayGio)
-  const ngay = m.pushed_at && !m.loi_truy_cap ? m.pushed_at.slice(0, 7) : '—'
-  return `| ${lienKet(m)} | ${o(m.sao)} | ${tt.nhan} ${ngay} | ${o(m.giay_phep)} | ${escapeBang(m.ghi_chu)} |`
+  const ngay = tt.nhan === '⚫' || tt.nhan === '❓' || tt.nhan === '⚪' ? '—' : m.pushed_at.slice(0, 7)
+  const nt = cotNenTang
+    ? ` ${NEN_TANG_HOP_LE.filter(k => m.nen_tang.includes(k)).map(k => TEN_NEN_TANG_NGAN[k]).join(' · ')} |`
+    : ''
+  return `| ${lienKet(m)} |${nt} ${o(m.sao)} | ${tt.nhan} ${ngay} | ${o(m.giay_phep)} | ${escapeBang(m.ghi_chu)} |`
 }
 
-function bang(ds, bayGio) {
+function bang(ds, bayGio, cotNenTang = false) {
   if (ds.length === 0) return ['_Chưa có mục nào._']
   return [
-    '| Tên | ★ | Cập nhật | Giấy phép | Ghi chú |',
-    '|---|---:|---|---|---|',
-    ...sapXep(ds).map(m => dongBang(m, bayGio)),
+    cotNenTang
+      ? '| Tên | Nền tảng | ★ | Cập nhật | Giấy phép | Ghi chú |'
+      : '| Tên | ★ | Cập nhật | Giấy phép | Ghi chú |',
+    cotNenTang ? '|---|---|---:|---|---|---|' : '|---|---:|---|---|---|',
+    ...sapXep(ds).map(m => dongBang(m, bayGio, cotNenTang)),
   ]
 }
 
@@ -127,9 +226,11 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     '',
     'Danh sách bộ gõ tiếng Việt cho máy tính bàn, kèm thư viện cho người muốn tự viết bộ gõ.',
     '',
-    `Số liệu ★, lần push cuối và giấy phép do GitHub Action tự cập nhật hàng tuần — không ai phải sửa tay, nên không lỗi thời (chốt lần cuối: ${ngayChot}).`,
+    `Số liệu ★, lần push cuối và giấy phép do GitHub Action sinh lại hàng tuần từ [\`data/ime.json\`](data/ime.json) — không ai chép tay (chốt lần cuối: ${ngayChot}).`,
     '',
-    'Nhãn theo lần push gần nhất: 🟢 trong 6 tháng · 🟡 6–24 tháng · 🔴 quá 24 tháng · 📦 repo đã lưu trữ · ⚫ không có mã nguồn công khai · ❓ không truy cập được repo.',
+    'Nhãn theo lần push gần nhất: 🟢 trong 6 tháng · 🟡 6–24 tháng · 🔴 quá 24 tháng · 📦 repo đã lưu trữ · ⚪ repo chưa có commit · ⚫ không có repo GitHub chứa mã nguồn bộ gõ · ❓ không truy cập được repo.',
+    '',
+    'Lần push cuối trả lời "còn ai đụng vào không", **không** phải "bản tải về còn mới không" — repo có commit mà bản phát hành cũ mèm thì cột Ghi chú nói.',
     '',
     '## Chọn nhanh',
     '',
@@ -143,7 +244,8 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     const goiY = chon_nhanh[os]
       .map(id => {
         const m = theoId.get(id)
-        return `${phanLoaiTrangThai(m, bayGio).nhan} ${lienKet(m)}`
+        const sao = m.sao === null || m.sao === undefined ? '' : ` ${m.sao}★`
+        return `${phanLoaiTrangThai(m, bayGio).nhan} ${lienKet(m)}${sao}`
       })
       .join(' · ')
     p.push(`| ${TEN_NHOM[os]} | ${goiY} |`)
@@ -151,7 +253,14 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
 
   p.push('', '## Bộ gõ')
   for (const k of NHOM_BO_GO) {
-    p.push('', `### ${TEN_NHOM[k]}`, '', ...bang(theoNhom.get(k), bayGio))
+    p.push('', `### ${TEN_NHOM[k]}`, '', ...bang(theoNhom.get(k), bayGio, k === 'da_nen'))
+    if (k === 'da_nen') continue
+    // Bảng theo OS chỉ chứa mục độc quyền OS đó, nên nó giấu mất phân nửa số
+    // bộ gõ chạy được trên OS đó. Không có dòng này thì người đọc không có cách
+    // nào biết là mình đang xem một danh sách bị cắt.
+    const them = theoNhom.get('da_nen').filter(m => m.nen_tang.includes(k)).length
+    if (them > 0)
+      p.push('', `Ngoài ra còn ${them} bộ gõ đa nền tảng cũng chạy trên ${TEN_NHOM[k]} — xem [Đa nền tảng](#đa-nền-tảng).`)
   }
 
   p.push(
@@ -160,7 +269,7 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     '',
     'Cho người muốn tự viết bộ gõ chứ không phải đi tìm bộ gõ để dùng.',
     '',
-    ...bang(theoNhom.get('thu_vien'), bayGio),
+    ...bang(theoNhom.get('thu_vien'), bayGio, true),
     '',
     '---',
     '',
@@ -168,11 +277,23 @@ export function renderReadme({ muc, chon_nhanh, bayGio }) {
     '',
     'Thiếu bộ gõ nào thì sửa [`data/ime.json`](data/ime.json) — xem [CONTRIBUTING.md](CONTRIBUTING.md). **Đừng sửa README.md, file này do máy sinh ra.**',
     '',
+    'Không rành Git thì [mở issue](../../issues/new) kèm tên bộ gõ và liên kết là đủ.',
+    '',
     'Giấy phép: [CC0-1.0](LICENSE).',
     '',
   )
 
   return p.join('\n')
+}
+
+// Hai câu này đổi theo thời điểm chạy chứ không theo dữ liệu, nên phải bỏ qua
+// khi so README cũ với mới. Neo vào đúng hai câu đó — regex quét cả file sẽ
+// nuốt luôn ngày nằm trong ghi_chu của một mục, và một đính chính như vậy sẽ
+// không bao giờ được ghi ra file: build in "Số liệu không đổi", CI xanh.
+export function boQuaNgayChot(s) {
+  return s
+    .replace(/\(chốt lần cuối: \d{4}-\d{2}-\d{2}\)/g, '(chốt lần cuối: …)')
+    .replace(/^Số liệu chốt ngày \d{4}-\d{2}-\d{2}\./gm, 'Số liệu chốt ngày ….')
 }
 
 const TY_LE_LOI_TOI_DA = 0.3

@@ -2,7 +2,15 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { phanLoaiLoi, renderReadme, validateData, vuotNguong } from './lib.mjs'
+import {
+  boQuaNgayChot,
+  chonGiayPhep,
+  lechGiayPhep,
+  phanLoaiLoi,
+  renderReadme,
+  validateData,
+  vuotNguong,
+} from './lib.mjs'
 
 const GOC = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TOKEN = process.env.GITHUB_TOKEN
@@ -83,10 +91,20 @@ async function main() {
     }
     if (r.full_name.toLowerCase() !== m.repo.toLowerCase())
       canhBao.push(`\`${m.repo}\` đã đổi thành \`${r.full_name}\` — cập nhật \`data/ime.json\``)
+    if (r.pushed_at == null)
+      canhBao.push(`\`${m.repo}\` không có \`pushed_at\` — repo chưa có commit nào, mục hiện nhãn ⚪`)
+
+    const tuApi = r.license?.spdx_id ?? null
+    if (lechGiayPhep({ giay_phep: tuApi, giay_phep_ghi_tay: m.giay_phep_ghi_tay }))
+      canhBao.push(
+        `\`${m.repo}\`: GitHub nay đọc được giấy phép \`${tuApi}\`, không khớp ` +
+          `\`giay_phep_ghi_tay\` = \`${m.giay_phep_ghi_tay}\` — bỏ trường ghi tay đi, API biết rồi`,
+      )
+
     muc.push({
       ...m,
       sao: r.stargazers_count,
-      giay_phep: r.license?.spdx_id ?? null,
+      giay_phep: chonGiayPhep({ giay_phep: tuApi, giay_phep_ghi_tay: m.giay_phep_ghi_tay }),
       pushed_at: r.pushed_at,
       archived: r.archived,
       loi_truy_cap: false,
@@ -103,12 +121,12 @@ async function main() {
   // Quyết định ghi dựa trên README đã render, không phải snapshot dữ liệu —
   // nếu chỉ so snapshot, một sửa đổi renderReadme (sửa lỗi escape, viết lại
   // phần mở đầu...) mà không đổi dữ liệu sẽ không bao giờ được ghi ra file.
-  // Bỏ qua mọi ngày dạng YYYY-MM-DD — cả dòng "Số liệu chốt ngày …" ở chân
-  // trang lẫn "chốt lần cuối: …" ở đoạn mở đầu đều đổi theo thời điểm chạy,
-  // không liên quan tới dữ liệu, nên phải bỏ qua cả hai khi so sánh.
-  const boQuaNgayChot = s => s.replace(/\d{4}-\d{2}-\d{2}/g, '')
+  // boQuaNgayChot (lib.mjs) bỏ đúng hai câu đổi theo thời điểm chạy. Chuẩn hoá
+  // CRLF vì trên checkout Windows git trả file về dạng CRLF, còn renderReadme
+  // luôn sinh LF — không chuẩn hoá thì nhánh "không đổi" không bao giờ chạy.
+  const chuanHoa = s => boQuaNgayChot(s.replace(/\r\n/g, '\n'))
 
-  if (readmeCu !== null && boQuaNgayChot(readmeCu) === boQuaNgayChot(readmeMoi)) {
+  if (readmeCu !== null && chuanHoa(readmeCu) === chuanHoa(readmeMoi)) {
     console.log('Số liệu không đổi — không ghi file nào.')
     await inCanhBao()
     return
