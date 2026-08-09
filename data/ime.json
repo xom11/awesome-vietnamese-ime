@@ -94,6 +94,14 @@
       "ghi_chu": "Bộ gõ Fcitx5 cho Linux, không để lại gạch chân preedit khi gõ."
     },
     {
+      "id": "fcitx5-unikey",
+      "ten": "Fcitx5 Unikey",
+      "repo": "fcitx/fcitx5-unikey",
+      "nen_tang": ["linux"],
+      "nhom": "bo_go",
+      "ghi_chu": "Nhân Unikey cho Fcitx5; README ibus-bamboo khuyên chuyển sang nếu chạy Wayland."
+    },
+    {
       "id": "vietc",
       "ten": "Viet+",
       "repo": "vndangkhoa/vietc",

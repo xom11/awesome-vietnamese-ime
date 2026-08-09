@@ -17,6 +17,11 @@ on:
     - cron: '0 3 * * 1'   # 03:00 UTC thứ 2 = 10:00 giờ Việt Nam
   push:
     branches: [main]
+    # KHÔNG thêm 'README.md' hay 'data/.snapshot.json' vào danh sách này.
+    # Job tự commit đúng hai file đó bằng PAT, mà commit đẩy bằng PAT thì CÓ
+    # kích hoạt workflow (khác GITHUB_TOKEN — GitHub chặn sẵn vòng lặp cho nó).
+    # Hai tập không giao nhau chính là thứ duy nhất ngăn job tự gọi lại mình
+    # vô hạn.
     paths:
       - 'data/ime.json'
       - 'scripts/**'
